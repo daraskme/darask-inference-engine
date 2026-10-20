@@ -1,0 +1,37 @@
+Darask Inference Engine (including Hayate and Tsumuji)
+Copyright Hayate contributors.
+
+DeepInfer design reference:
+  https://github.com/deepseek-ai/DeepInfer
+  reviewed commit: 774ce244b87cc0eb8d4b94ab9f5de2ab22049f01
+  upstream license: Apache License 2.0 (licenses/DeepInfer-LICENSE)
+
+The CPU sampler's stable radix ordering was independently implemented in Rust,
+inspired by DeepInfer's radix-based vocabulary filtering in
+ deepinfer/model_executor/layers/tilelang_ops/cuda/fused_sample.py.
+No DeepInfer CUDA/TileLang kernel is copied or linked.
+
+The bounded, double-buffered HYT resident loader was independently implemented
+in Rust, informed by DeepInfer PR #52 (double-buffered pinned weight loading):
+  https://github.com/deepseek-ai/DeepInfer/pull/52
+  reviewed head: 2b30706c94998f6887dce525f9aa9f575d6912c3
+It uses Hayate's existing validation, positional reads and CUDA runtime.
+
+Build dependencies fetched separately by engines/hayate/scripts/fetch-third-party.sh:
+  FlashInfer (Apache-2.0), including its pinned CUTLASS (BSD-3-Clause).
+  Their upstream license notices remain in the fetched sources.
+
+Native Kogarashi GGML compatibility:
+  Q4_K and Q6_K block layouts and decoder formulas follow llama.cpp / ggml.
+  Upstream: https://gitlab.com/agentionai-group/llama.cpp
+  Reference revision: 9aa51ce4fdd3435a91531ffe16a17414ccc6dc6f
+  MIT License, Copyright (c) 2023-2026 The ggml authors.
+  License: licenses/llama.cpp-MIT.
+  The native decoder does not link the reference backend. The reference
+  backend and its MTP patch remain separately available for differential tests.
+
+EXL3 random-tile decode fixtures:
+  exllamav3 1.6.2 and Project Maya PR #265, distributed under MIT.
+  Copyright (c) 2025 Turboderp.
+  Copyright (c) 2026 Peasant Smith and the Project Maya contributors.
+  See licenses/EXL3-fixtures-MIT and the fixture directory README.

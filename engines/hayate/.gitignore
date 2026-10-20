@@ -1,0 +1,11 @@
+/target
+/result
+*.hyt
+/models/
+/outputs/
+__pycache__/
+.venv/
+/.worktrees/
+/third_party/
+
+!python-tools/tests/golden.hyt

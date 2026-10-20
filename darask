@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+export DARASK_ROOT="$root"
+if [[ -x "$root/target/release/darask" ]]; then
+  exec "$root/target/release/darask" "$@"
+fi
+exec cargo run --quiet --release -p darask-cli --manifest-path "$root/Cargo.toml" -- "$@"

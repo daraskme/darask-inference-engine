@@ -1,0 +1,15 @@
+[package]
+name = "darask-api"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lints]
+workspace = true
+[features]
+default = []
+engine = ["dep:tsumuji-engine", "dep:tsumuji-cuda"]
+[dependencies]
+darask-text.workspace = true
+tsumuji-engine = { workspace = true, optional = true }
+tsumuji-cuda = { workspace = true, optional = true }

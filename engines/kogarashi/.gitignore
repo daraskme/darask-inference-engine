@@ -1,0 +1,10 @@
+/upstream/
+/build/
+/models/
+/.venv/
+/.venv-exl3/
+/.cache/
+/.tools/
+/artifacts/
+__pycache__/
+*.pyc

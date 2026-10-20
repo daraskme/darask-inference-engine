@@ -1,0 +1,10 @@
+[package]
+name = "tsumuji-model"
+description = "Qwen3.8-Flash-Next (qwen4_exp) shapes, PLE n-gram hashing, and the per-layer execution plan"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true

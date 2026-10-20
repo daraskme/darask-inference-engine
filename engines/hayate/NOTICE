@@ -1,0 +1,22 @@
+Hayate
+Copyright Hayate contributors.
+
+DeepInfer design reference:
+  https://github.com/deepseek-ai/DeepInfer
+  reviewed commit: 774ce244b87cc0eb8d4b94ab9f5de2ab22049f01
+  upstream license: Apache License 2.0 (licenses/DeepInfer-LICENSE)
+
+The CPU sampler's stable radix ordering was independently implemented in Rust,
+inspired by DeepInfer's radix-based vocabulary filtering in
+ deepinfer/model_executor/layers/tilelang_ops/cuda/fused_sample.py.
+No DeepInfer CUDA/TileLang kernel is copied or linked.
+
+The bounded, double-buffered HYT resident loader was independently implemented
+in Rust, informed by DeepInfer PR #52 (double-buffered pinned weight loading):
+  https://github.com/deepseek-ai/DeepInfer/pull/52
+  reviewed head: 2b30706c94998f6887dce525f9aa9f575d6912c3
+It uses Hayate's existing validation, positional reads and CUDA runtime.
+
+Build dependencies fetched separately by scripts/fetch-third-party.sh:
+  FlashInfer (Apache-2.0), including its pinned CUTLASS (BSD-3-Clause).
+  Their upstream license notices remain in the fetched sources.

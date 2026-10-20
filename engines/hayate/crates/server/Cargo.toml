@@ -1,0 +1,15 @@
+[package]
+name = "hayate-server"
+description = "Local GLM-5.3-Flash chat API and elastic VRAM coordination"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+darask-json.workspace = true
+hayate-core.workspace = true
+hayate-llm.workspace = true

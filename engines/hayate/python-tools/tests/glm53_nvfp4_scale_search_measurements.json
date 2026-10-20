@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "source": "/mnt/NVME4TB/darask-inference-engine/local/hayate/src/GLM-5.3-Flash-dealignai-FP8",
+  "source_config_sha256": "bb8f01c42cb92a52ca72e65afb4d5bd8d11aef083cd210e8de25dfb904f23e9f",
+  "source_basis": "F32 restoration of source weights; not a BF16-master comparison",
+  "layers": [
+    3,
+    23,
+    44
+  ],
+  "experts": [
+    0,
+    143,
+    287
+  ],
+  "hadamard_blocks": [
+    0,
+    128
+  ],
+  "scale_search_ratios": {
+    "rtn": [
+      1.0
+    ],
+    "mse": [
+      1.0,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1.05,
+      1.1,
+      1.15,
+      1.2
+    ],
+    "mse-ge1": [
+      1.0,
+      1.05,
+      1.1,
+      1.15,
+      1.2,
+      1.25,
+      1.5,
+      1.75
+    ]
+  },
+  "device": "cpu",
+  "torch": "2.13.0+cu130",
+  "threads": 4,
+  "elapsed_s": 174.6170905290055,
+  "summary": {
+    "rtn/r0": {
+      "matrices": 27,
+      "relative_l2": 0.0919933380104051,
+      "mean_matrix_relative_l2": 0.09199490369864075,
+      "payload_bytes": 127402092,
+      "deep_clipped_blocks": 0,
+      "max_clip_fraction": 0.05454548544134761,
+      "zeroed_nonzero_blocks": 0,
+      "quantize_s": 3.24648935807636
+    },
+    "mse/r0": {
+      "matrices": 27,
+      "relative_l2": 0.08194800872118577,
+      "mean_matrix_relative_l2": 0.08193238568817808,
+      "payload_bytes": 127402092,
+      "deep_clipped_blocks": 922171,
+      "max_clip_fraction": 0.22222226085485927,
+      "zeroed_nonzero_blocks": 0,
+      "quantize_s": 37.21378072112566
+    },
+    "mse-ge1/r0": {
+      "matrices": 27,
+      "relative_l2": 0.08186894576012665,
+      "mean_matrix_relative_l2": 0.08186665133364757,
+      "payload_bytes": 127402092,
+      "deep_clipped_blocks": 0,
+      "max_clip_fraction": 0.05454548544134761,
+      "zeroed_nonzero_blocks": 0,
+      "quantize_s": 28.902097674901597
+    },
+    "rtn/r128": {
+      "matrices": 27,
+      "relative_l2": 0.09514676216372374,
+      "mean_matrix_relative_l2": 0.09514687444900377,
+      "payload_bytes": 127402092,
+      "deep_clipped_blocks": 0,
+      "max_clip_fraction": 0.05882355816361434,
+      "zeroed_nonzero_blocks": 0,
+      "quantize_s": 3.2971710001002066
+    },
+    "mse/r128": {
+      "matrices": 27,
+      "relative_l2": 0.08601145791175284,
+      "mean_matrix_relative_l2": 0.08601205042507264,
+      "payload_bytes": 127402092,
+      "deep_clipped_blocks": 1324839,
+      "max_clip_fraction": 0.22200511606460255,
+      "zeroed_nonzero_blocks": 0,
+      "quantize_s": 36.28508665523259
+    },
+    "mse-ge1/r128": {
+      "matrices": 27,
+      "relative_l2": 0.08519179179268604,
+      "mean_matrix_relative_l2": 0.08519182112163212,
+      "payload_bytes": 127402092,
+      "deep_clipped_blocks": 0,
+      "max_clip_fraction": 0.05882355816361434,
+      "zeroed_nonzero_blocks": 0,
+      "quantize_s": 28.230684233130887
+    }
+  },
+  "quality_gate": null,
+  "quality_status": "not_evaluated",
+  "limitations": [
+    "weight reconstruction only; no KLD/NLL/task evaluation",
+    "sampled experts, not a whole-model result",
+    "timings include cold calls; not an inference-speed benchmark"
+  ],
+  "matrix_inputs": [
+    {
+      "layer": 3,
+      "expert": 0,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "34f11365a8dd38d11b5490287d3a282a8223beb746c12ecdb723cdae17b0aa2b"
+    },
+    {
+      "layer": 3,
+      "expert": 0,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "3b82c9b599b03472b40e8f69d479e92001ccddd2e07920854d1cddfbad3d459d"
+    },
+    {
+      "layer": 3,
+      "expert": 0,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "f868f97a4bddc49d4f2bde4f326a9544df62c92c9b212b17b5913807579bb958"
+    },
+    {
+      "layer": 3,
+      "expert": 143,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "dc0fbd44d6e85b01b897187d39408bbfbe138bcad0859ae445dc943618dec118"
+    },
+    {
+      "layer": 3,
+      "expert": 143,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "ff9c6faea902b7a19926ed3d0789f3a0b63ae265f06f71576428f402e1a0037b"
+    },
+    {
+      "layer": 3,
+      "expert": 143,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "a48d664a0b714561bc37cd20bde43c765305390238888c2477ad79fe22dd896f"
+    },
+    {
+      "layer": 3,
+      "expert": 287,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "23abba2ddaa45bb00b8bf45a3c1fca9532065d9dddb2e6810337f41fc41786e4"
+    },
+    {
+      "layer": 3,
+      "expert": 287,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "9d112943c2a18df1cfc7fd12e5af77e75f1a20f53d0436b2d7fd1c0e23956f7f"
+    },
+    {
+      "layer": 3,
+      "expert": 287,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "062b02bd145521c18b8a7159a8e15b000cc574e693fecacb3164ec8b392c22b8"
+    },
+    {
+      "layer": 23,
+      "expert": 0,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "338e8f26b075af1fb3072f6a21274245cc71338e42d8d384f5770474a2057993"
+    },
+    {
+      "layer": 23,
+      "expert": 0,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "ac169caddba9efef79d474e5ce66d0ee8fdaf691e00f4735c350328f7ab20d8a"
+    },
+    {
+      "layer": 23,
+      "expert": 0,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "d44de2a3fe6777a2c6382b9ef55c3540398bd87a9115ce6ae50542ab7a47952c"
+    },
+    {
+      "layer": 23,
+      "expert": 143,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "8f72e5168bc22c7695c1d37318260b979732e4b606ada565ea1b034286579032"
+    },
+    {
+      "layer": 23,
+      "expert": 143,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "e8a2519489035ed3b2589d9308e1675c14b50ae884b85dcbe1d525c62dbf510b"
+    },
+    {
+      "layer": 23,
+      "expert": 143,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "f379304f2917b0ca1d7c390e68f6fee559c28db58f7b51f9a1cd9287bb5540ab"
+    },
+    {
+      "layer": 23,
+      "expert": 287,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "9c1e065822042976a221f74c55f83e2350574f98dfef99e93faaa3abebd586de"
+    },
+    {
+      "layer": 23,
+      "expert": 287,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "fad2e37c2867b17190bede870c4767e14f8498c704ce10c7ebd9d136437c2787"
+    },
+    {
+      "layer": 23,
+      "expert": 287,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "a5c1b4baef0571b3977a7eec335652279c3230e7fc404c079a3a37d479744eac"
+    },
+    {
+      "layer": 44,
+      "expert": 0,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "4dfa28bafa1bf9e092e925edd455636cf2565a279c7745075daeb8e9fdfba3e0"
+    },
+    {
+      "layer": 44,
+      "expert": 0,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "6320371f915fe40d7de9f9b151b1aa9dfb2f6329708832a500ab97b2583c75ca"
+    },
+    {
+      "layer": 44,
+      "expert": 0,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "546465465ce658f46f0ea1688dc330278207698bc27e95fc1261ce7055ce0cbd"
+    },
+    {
+      "layer": 44,
+      "expert": 143,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "13e8f8ffe5c80e4b2fd86d840162c39af936225c121cbd6f75d4c126a4615fd8"
+    },
+    {
+      "layer": 44,
+      "expert": 143,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "8676612e3991458d7be5740b32106c81229a42bb4ac9bb094a00e9d71d9578f9"
+    },
+    {
+      "layer": 44,
+      "expert": 143,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "f7fa0eaea92fa49e470e1fcec5f10aa192fc5e7783d2d45c9a055ee4bbb55b5b"
+    },
+    {
+      "layer": 44,
+      "expert": 287,
+      "part": "gate",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "678ca5765f2d028caf36172d584eb861f9931a4b308e0ad6d2221bda26b5a8aa"
+    },
+    {
+      "layer": 44,
+      "expert": 287,
+      "part": "up",
+      "shape": [
+        2048,
+        4096
+      ],
+      "restored_f32_sha256": "e8a3c68a7e4c19bc0a30cb823716b676e0bb53c6e687918cef3df74a536c90f4"
+    },
+    {
+      "layer": 44,
+      "expert": 287,
+      "part": "down",
+      "shape": [
+        4096,
+        2048
+      ],
+      "restored_f32_sha256": "bafd6a14d4aaf58839a094b5882d44348afc579c8307abe135c02e8ffc6cdb4d"
+    }
+  ],
+  "raw_report": "/mnt/NVME4TB/darask-inference-engine/local/hayate/spill/glm53-quant-research/nvfp4-recipes-cpu.json",
+  "hardware": "i9-12900KS, CPU quantization, 4 PyTorch threads"
+}

@@ -1,0 +1,16 @@
+[package]
+name = "tsumuji-engine"
+description = "Qwen3.8-Flash-Next decode engine: weights in VRAM (PLE table in pinned RAM), decode step, CLI"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+tsumuji-cuda.workspace = true
+tsumuji-kernels.workspace = true
+tsumuji-model.workspace = true
+tsumuji-pack.workspace = true

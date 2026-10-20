@@ -1,0 +1,12 @@
+[package]
+name = "darask-cli"
+description = "Single Rust entry point for all Darask engines"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+[lints]
+workspace = true
+[[bin]]
+name = "darask"
+path = "src/main.rs"

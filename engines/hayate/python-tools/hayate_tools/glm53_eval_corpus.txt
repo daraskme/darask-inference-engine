@@ -1,0 +1,23 @@
+An inference engine executes a fixed sequence of tensor operations. Its latency depends on memory bandwidth, arithmetic throughput, and the cost of moving data between storage tiers. A useful benchmark records the input length, output length, warmup count, and repeated timings. Loading weights and compiling kernels belong to cold start measurements. A warm run keeps weights resident and reports the time spent processing tokens. Correctness must be checked before comparing speed.
+
+量子化の品質は、同じ文章と同じトークン列で比較します。基準モデルと候補モデルに同じ入力を与え、次の単語の確率を調べます。短い文章でも、英語、日本語、コードを含めることで、異なる種類の入力を確認できます。測定結果には条件を記録し、速さと正しさを分けて判断します。
+
+def merge_sorted(left, right):
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+The merge function preserves order and duplicates. Empty inputs produce an empty result. Each element is visited once, so the running time is linear in the sum of the input lengths. A test should include repeated values, negative numbers, and lists of different lengths. For example, merging [-3, 2, 2] with [-1, 2, 7] yields [-3, -1, 2, 2, 2, 7].
+
+For probability distributions P and Q, relative entropy measures how much Q differs from P. Compute log probabilities by subtracting log-sum-exp from each logit. This remains stable when logits have large magnitude. Average the divergence across fixed positions, compare the most likely token at each position, and report the negative log probability of the actual next token. A single greedy continuation can diverge after one changed token; teacher forcing keeps all subsequent contexts identical.
+
+When a quality gate fails, restore one layer at a time and repeat the same measurement. Rank layers by the reduction in divergence, then test combinations of the most sensitive layers. Improvements need not add together, because routing and hidden states depend on earlier computations. Record both quality and additional weight storage. Finally, evaluate the chosen configuration again before collecting throughput numbers with a separate benchmark prompt and a fixed frequency file.

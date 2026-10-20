@@ -1,0 +1,54 @@
+{
+ "map": "manga.png",
+ "isolate_until": 0.2,
+ "regions": [
+  {
+   "color": "#22feca",
+   "prompt": "beach, blue sky, white clouds, ocean"
+  },
+  {
+   "color": "#fd23b2",
+   "prompt": "an adult woman with long blonde hair and blue eyes, white bikini, standing, hand on hip, holding a popsicle, open-mouth smile, looking at viewer"
+  },
+  {
+   "color": "#65fe23",
+   "prompt": "white speech bubble with the text \"HI!\""
+  },
+  {
+   "color": "#fe242b",
+   "prompt": "beach, blue sky, ocean"
+  },
+  {
+   "color": "#fe9322",
+   "prompt": "an adult woman with long blonde hair and blue eyes, white bikini, hand touching her own hair, gentle smile, wind-blown hair, upper body"
+  },
+  {
+   "color": "#fee723",
+   "prompt": "white speech bubble with the text \"WELL..\""
+  },
+  {
+   "color": "#8323fe",
+   "prompt": "blue sky"
+  },
+  {
+   "color": "#228ffe",
+   "prompt": "an adult woman with long blonde hair and blue eyes, white bikini, arms raised above her head, upper body"
+  },
+  {
+   "color": "#23fd7b",
+   "prompt": "white speech bubble with the text \"LOOK!\""
+  },
+  {
+   "color": "#b8fe23",
+   "prompt": "blue sky, ocean"
+  },
+  {
+   "color": "#242efe",
+   "prompt": "close-up of the face of an adult woman with long blonde hair, big grin, eyes closed, blushing"
+  },
+  {
+   "color": "#23fe2d",
+   "prompt": "beach, blue sky, white clouds, ocean horizon, no humans"
+  }
+ ]
+}

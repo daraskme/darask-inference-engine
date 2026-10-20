@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kogarashi"
+version = "0.1.0.dev0"
+description = "Ornith inference runtime and independently validated quantization experiments"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+quant-lab = ["numpy>=2,<3"]
+
+[project.scripts]
+kogarashi = "kogarashi.__main__:main"
+kogarashi-quant-lab = "kogarashi.quant_lab.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["kogarashi*"]

@@ -1,0 +1,20 @@
+[package]
+name = "tsumuji-server"
+description = "OpenAI-compatible HTTP server (M5 subset): tokenizer, chat template, sampling, SSE; std only"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "tsumuji-serve"
+path = "src/main.rs"
+
+[features]
+default = ["engine"]
+engine = ["darask-api/engine"]
+[dependencies]
+darask-api.workspace = true

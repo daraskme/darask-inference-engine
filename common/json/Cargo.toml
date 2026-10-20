@@ -1,0 +1,13 @@
+[package]
+name = "darask-json"
+description = "Shared strict JSON reader with ordered objects and exact number literals"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+hayate-core.workspace = true

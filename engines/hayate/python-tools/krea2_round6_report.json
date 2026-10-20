@@ -1,0 +1,1274 @@
+{
+  "date": "2026-10-14",
+  "hayate_base_commit": "b94cf1a1af470df558d593c084e0de911d7a3979",
+  "diffusers_commit": "916a5791ed5f29d966200d2eee53f06862ec4434",
+  "cpu": "i9-12900KS",
+  "gpu_access": false,
+  "inventory": {
+    "bf16": [
+      {
+        "component": "text",
+        "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-text.bf16.hyt",
+        "file_bytes": 7843594240,
+        "resident_bytes": 7065157120
+      },
+      {
+        "component": "dit",
+        "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-turbo.bf16.hyt",
+        "file_bytes": 25641205760,
+        "resident_bytes": 25640908952
+      },
+      {
+        "component": "vae",
+        "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-vae.bf16.hyt",
+        "file_bytes": 50848256,
+        "resident_bytes": 50583910
+      }
+    ],
+    "fp8": [
+      {
+        "component": "text",
+        "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-text.bf16.hyt",
+        "file_bytes": 7843594240,
+        "resident_bytes": 7065157120
+      },
+      {
+        "component": "dit",
+        "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-turbo.fp8.hyt",
+        "file_bytes": 13223600128,
+        "resident_bytes": 13223303320
+      },
+      {
+        "component": "vae",
+        "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-vae.bf16.hyt",
+        "file_bytes": 50848256,
+        "resident_bytes": 50583910
+      }
+    ]
+  },
+  "before": {
+    "bf16": {
+      "startup_parts_ms": {
+        "device_ms": 466.446897,
+        "input_ms": 235.254009,
+        "open_tables_ms": 5.392851,
+        "load_ms": 11656.075665,
+        "arena_ms": 23.115488,
+        "convert_ms": 0.0,
+        "text_setup_ms": 10.87874,
+        "text_kernel_prepare_ms": 132.945967,
+        "text_capture_ms": 3.035944,
+        "dit_kernel_prepare_ms": 956.158043,
+        "dit_capture_ms": 67.253402,
+        "vae_warm_ms": 88.769666
+      },
+      "payload_bytes": 32756649982,
+      "load_effective_gbps": 2.8102640136730788,
+      "workers": [
+        [
+          0.0,
+          465.012062,
+          1334.670031,
+          258.644788,
+          2230.209161,
+          3570.31403
+        ],
+        [
+          2.0,
+          527.014854,
+          2494.80688,
+          839.212154,
+          3664.403831,
+          6141.854161
+        ],
+        [
+          3.0,
+          482.342616,
+          2995.781887,
+          1100.944491,
+          4498.225917,
+          5510.614329
+        ],
+        [
+          1.0,
+          587.673648,
+          4396.763077,
+          962.653642,
+          4540.440594,
+          5571.185893
+        ]
+      ]
+    },
+    "fp8": {
+      "startup_parts_ms": {
+        "device_ms": 463.322283,
+        "input_ms": 242.363625,
+        "open_tables_ms": 12.302349,
+        "load_ms": 6968.545597,
+        "arena_ms": 22.055681,
+        "convert_ms": 0.0,
+        "text_setup_ms": 19.165482,
+        "text_kernel_prepare_ms": 126.912738,
+        "text_capture_ms": 2.982221,
+        "dit_kernel_prepare_ms": 304.414827,
+        "dit_capture_ms": 70.857913,
+        "vae_warm_ms": 116.763841
+      },
+      "payload_bytes": 20339044350,
+      "load_effective_gbps": 2.9186928702534543,
+      "workers": [
+        [
+          0.0,
+          303.411071,
+          1076.211263,
+          232.899436,
+          2169.068062,
+          2975.639594
+        ],
+        [
+          1.0,
+          221.84416,
+          1863.713939,
+          580.957907,
+          2761.440839,
+          3606.674026
+        ],
+        [
+          2.0,
+          257.749769,
+          1800.571571,
+          554.031845,
+          2188.953214,
+          3851.039282
+        ],
+        [
+          3.0,
+          131.320403,
+          2147.026791,
+          736.199057,
+          3074.293778,
+          3529.010341
+        ]
+      ]
+    }
+  },
+  "after_gpu": null,
+  "vae_before": {
+    "stages": [
+      {
+        "stage": "decoder.mid_block",
+        "cumulative_input_l2": 0.0,
+        "cumulative_output_l2": 0.0020506243139740035,
+        "growth_l2": 0.0020506243139740035
+      },
+      {
+        "stage": "decoder.up_blocks.0",
+        "cumulative_input_l2": 0.0020506243139740035,
+        "cumulative_output_l2": 0.004468269813526492,
+        "growth_l2": 0.0024176454995524887
+      },
+      {
+        "stage": "decoder.up_blocks.1",
+        "cumulative_input_l2": 0.004468269813526492,
+        "cumulative_output_l2": 0.005564063651861909,
+        "growth_l2": 0.001095793838335417
+      },
+      {
+        "stage": "decoder.up_blocks.2",
+        "cumulative_input_l2": 0.005564063651861909,
+        "cumulative_output_l2": 0.0056055448839923755,
+        "growth_l2": 4.148123213046622e-05
+      },
+      {
+        "stage": "decoder.up_blocks.3",
+        "cumulative_input_l2": 0.0056055448839923755,
+        "cumulative_output_l2": 0.025689125945844913,
+        "growth_l2": 0.020083581061852537
+      },
+      {
+        "stage": "decoder.head",
+        "cumulative_input_l2": 0.025689125945844913,
+        "cumulative_output_l2": 0.014938518899843156,
+        "growth_l2": -0.010750607046001757
+      }
+    ],
+    "largest_growth": "decoder.up_blocks.3",
+    "reference_runs": null,
+    "note": "L2 values are fractions. growth is output minus input relative L2, not an additive error decomposition. Local replay resets mid/up/head inputs independently; no quality gate is relaxed.",
+    "reference_trace_vs_pipeline_decoded_l2": 0.0,
+    "hayate_vs_reference_trace_decoded_l2": 0.014937819416804575
+  },
+  "vae_up3_before": [
+    {
+      "stage": "decoder.up_blocks.3.resnets.0",
+      "input_l2": 0.0056055448839923755,
+      "branch_l2": 0.017683105208537116,
+      "output_l2": 0.0063482139399846736,
+      "reference_bf16_add_l2": 0.0,
+      "reference_output_rms": 0.6993424866723436,
+      "reference_branch_rms": 0.16804951276754188,
+      "reference_skip_rms": 0.6030107434850672,
+      "hayate_bf16_add_l2": 0.0,
+      "hayate_output_rms": 0.6993396654116577,
+      "hayate_branch_rms": 0.16804792398293295,
+      "hayate_skip_rms": 0.60300930244345
+    },
+    {
+      "stage": "decoder.up_blocks.3.resnets.1",
+      "input_l2": 0.0063482139399846736,
+      "branch_l2": 0.03631048269190078,
+      "output_l2": 0.014342104314008737,
+      "reference_bf16_add_l2": 0.0,
+      "reference_output_rms": 0.8677871250581901,
+      "reference_branch_rms": 0.31932673169686016,
+      "reference_skip_rms": 0.6993424866723436,
+      "hayate_bf16_add_l2": 0.0,
+      "hayate_output_rms": 0.8677833551507844,
+      "hayate_branch_rms": 0.31932666095427814,
+      "hayate_skip_rms": 0.6993396654116577
+    },
+    {
+      "stage": "decoder.up_blocks.3.resnets.2",
+      "input_l2": 0.014342104314008737,
+      "branch_l2": 0.05153443434240301,
+      "output_l2": 0.025689125945844913,
+      "reference_bf16_add_l2": 0.0,
+      "reference_output_rms": 1.2935946599261876,
+      "reference_branch_rms": 0.6111476112899492,
+      "reference_skip_rms": 0.8677871250581901,
+      "hayate_bf16_add_l2": 0.0,
+      "hayate_output_rms": 1.2935900948332173,
+      "hayate_branch_rms": 0.611147085499316,
+      "hayate_skip_rms": 0.8677833551507844
+    }
+  ],
+  "cpu_benchmarks": {
+    "cache_requests_single_sample": {
+      "files": [
+        {
+          "component": "text",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-text.bf16.hyt",
+          "file_bytes": 7843594240,
+          "resident_bytes": 7065157120
+        },
+        {
+          "component": "dit",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-turbo.fp8.hyt",
+          "file_bytes": 13223600128,
+          "resident_bytes": 13223303320
+        },
+        {
+          "component": "vae",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-vae.bf16.hyt",
+          "file_bytes": 50848256,
+          "resident_bytes": 50583910
+        }
+      ],
+      "trials": [
+        {
+          "cache": "warm",
+          "threads": 1,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 5963.177033991087,
+              "effective_gbps": 3.410773189201681,
+              "physical_read_bytes": 20269768704,
+              "physical_to_payload_ratio": 0.9965939576703858,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2175.895608845167,
+                  "calls": 1050,
+                  "reader_gbps": 3.2470110658248705
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 3780.4826132487506,
+                  "calls": 1890,
+                  "reader_gbps": 3.497781810623533
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 5.001259924029,
+                  "calls": 104,
+                  "reader_gbps": 10.114233366869234
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.410773189201681
+        },
+        {
+          "cache": "warm",
+          "threads": 4,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 4564.285619999282,
+              "effective_gbps": 4.456128744634347,
+              "physical_read_bytes": 16747372544,
+              "physical_to_payload_ratio": 0.8234100017585143,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6465.875017122016,
+                  "calls": 1050,
+                  "reader_gbps": 1.092683836494063
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 8447.541305911727,
+                  "calls": 1890,
+                  "reader_gbps": 1.5653434343962447
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 11.799144966062158,
+                  "calls": 104,
+                  "reader_gbps": 4.287082678066447
+                }
+              }
+            }
+          ],
+          "median_gbps": 4.456128744634347
+        },
+        {
+          "cache": "warm",
+          "threads": 8,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 3576.8046640005196,
+              "effective_gbps": 5.686372687529309,
+              "physical_read_bytes": 13534666752,
+              "physical_to_payload_ratio": 0.6654524430495182,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11092.112962942338,
+                  "calls": 1050,
+                  "reader_gbps": 0.6369532246564742
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 7161.732017833856,
+                  "calls": 1890,
+                  "reader_gbps": 1.8463834289068433
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 12.561218114569783,
+                  "calls": 104,
+                  "reader_gbps": 4.02699081718258
+                }
+              }
+            }
+          ],
+          "median_gbps": 5.686372687529309
+        },
+        {
+          "cache": "cold",
+          "threads": 1,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 5957.815901987487,
+              "effective_gbps": 3.4138423685120967,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2133.5068480693735,
+                  "calls": 1050,
+                  "reader_gbps": 3.3115230571644587
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 3804.164496716112,
+                  "calls": 1890,
+                  "reader_gbps": 3.4760072366520474
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 18.23079603491351,
+                  "calls": 104,
+                  "reader_gbps": 2.774640772850925
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.4138423685120967
+        },
+        {
+          "cache": "cold",
+          "threads": 4,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 5520.547104009893,
+              "effective_gbps": 3.684244327020881,
+              "physical_read_bytes": 20343152640,
+              "physical_to_payload_ratio": 1.0002019903162265,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6761.554700904526,
+                  "calls": 1050,
+                  "reader_gbps": 1.0449012738231431
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10305.484337019152,
+                  "calls": 1890,
+                  "reader_gbps": 1.2831326396275737
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 48.430260038003325,
+                  "calls": 104,
+                  "reader_gbps": 1.0444690976324864
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.684244327020881
+        },
+        {
+          "cache": "cold",
+          "threads": 8,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 5324.636147997808,
+              "effective_gbps": 3.819799848229625,
+              "physical_read_bytes": 20344709120,
+              "physical_to_payload_ratio": 1.000278517018918,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11700.03710585297,
+                  "calls": 1050,
+                  "reader_gbps": 0.6038576678073644
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 17675.029728066875,
+                  "calls": 1890,
+                  "reader_gbps": 0.7481347145347199
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 109.32524500822183,
+                  "calls": 104,
+                  "reader_gbps": 0.46269194270907715
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.819799848229625
+        }
+      ],
+      "note": "CPU read-only; ordinary RAM; no validation/H2D. Cold uses advisory per-file DONTNEED; verify physical_to_payload_ratio before claiming disk bandwidth. Warm priming is excluded. GB=1e9 bytes."
+    },
+    "buffered_threads": {
+      "files": [
+        {
+          "component": "text",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-text.bf16.hyt",
+          "file_bytes": 7843594240,
+          "resident_bytes": 7065157120
+        },
+        {
+          "component": "dit",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-turbo.fp8.hyt",
+          "file_bytes": 13223600128,
+          "resident_bytes": 13223303320
+        },
+        {
+          "component": "vae",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-vae.bf16.hyt",
+          "file_bytes": 50848256,
+          "resident_bytes": 50583910
+        }
+      ],
+      "trials": [
+        {
+          "cache": "cold",
+          "threads": 1,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 6229.13081299339,
+              "effective_gbps": 3.265149659014166,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2234.6440428082133,
+                  "calls": 1050,
+                  "reader_gbps": 3.1616476649772904
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 3974.5436578814406,
+                  "calls": 1890,
+                  "reader_gbps": 3.3269991370653216
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 17.950595036381856,
+                  "calls": 104,
+                  "reader_gbps": 2.817951711209444
+                }
+              }
+            },
+            {
+              "wall_ms": 6215.050844999496,
+              "effective_gbps": 3.27254673489347,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2231.5855170745635,
+                  "calls": 1050,
+                  "reader_gbps": 3.165980898308516
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 3963.411339063896,
+                  "calls": 1890,
+                  "reader_gbps": 3.336343919105597
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 18.21986488357652,
+                  "calls": 104,
+                  "reader_gbps": 2.7763054404205048
+                }
+              }
+            },
+            {
+              "wall_ms": 6280.192903999705,
+              "effective_gbps": 3.2386018488455264,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2250.2541179710533,
+                  "calls": 1050,
+                  "reader_gbps": 3.1397152275274207
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 4009.9724799511023,
+                  "calls": 1890,
+                  "reader_gbps": 3.2976045062935806
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 18.20952103298623,
+                  "calls": 104,
+                  "reader_gbps": 2.777882510383888
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.265149659014166
+        },
+        {
+          "cache": "cold",
+          "threads": 4,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 5540.996680007083,
+              "effective_gbps": 3.670647272427891,
+              "physical_read_bytes": 20343140352,
+              "physical_to_payload_ratio": 1.0002013861580472,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6815.001727052731,
+                  "calls": 1050,
+                  "reader_gbps": 1.0367065780708837
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10325.579566168017,
+                  "calls": 1890,
+                  "reader_gbps": 1.2806354583065185
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 60.657600974082015,
+                  "calls": 104,
+                  "reader_gbps": 0.8339253314949542
+                }
+              }
+            },
+            {
+              "wall_ms": 5531.146188994171,
+              "effective_gbps": 3.6771843764445173,
+              "physical_read_bytes": 20343144448,
+              "physical_to_payload_ratio": 1.000201587544107,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6799.557662001462,
+                  "calls": 1050,
+                  "reader_gbps": 1.0390612847483902
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10279.89525879093,
+                  "calls": 1890,
+                  "reader_gbps": 1.2863266586974214
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 65.12701998872217,
+                  "calls": 104,
+                  "reader_gbps": 0.7766962162365091
+                }
+              }
+            },
+            {
+              "wall_ms": 5543.89392399753,
+              "effective_gbps": 3.668728988835729,
+              "physical_read_bytes": 20343103488,
+              "physical_to_payload_ratio": 1.0001995736835099,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6781.07304207515,
+                  "calls": 1050,
+                  "reader_gbps": 1.0418936761427238
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10360.265931012691,
+                  "calls": 1890,
+                  "reader_gbps": 1.2763478667489623
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 50.25609498261474,
+                  "calls": 104,
+                  "reader_gbps": 1.006522890755811
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.670647272427891
+        },
+        {
+          "cache": "cold",
+          "threads": 8,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 5333.734838990495,
+              "effective_gbps": 3.8132837428134185,
+              "physical_read_bytes": 20344160256,
+              "physical_to_payload_ratio": 1.0002515312869162,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11725.905416024034,
+                  "calls": 1050,
+                  "reader_gbps": 0.6025255082089533
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 17562.275027041323,
+                  "calls": 1890,
+                  "reader_gbps": 0.7529379479389521
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 106.90178096410818,
+                  "calls": 104,
+                  "reader_gbps": 0.4731811719487006
+                }
+              }
+            },
+            {
+              "wall_ms": 5349.067810995621,
+              "effective_gbps": 3.802353058263866,
+              "physical_read_bytes": 20344709120,
+              "physical_to_payload_ratio": 1.000278517018918,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11743.876068096142,
+                  "calls": 1050,
+                  "reader_gbps": 0.601603514804918
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 17677.88463414763,
+                  "calls": 1890,
+                  "reader_gbps": 0.7480138938375633
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 107.80671495012939,
+                  "calls": 104,
+                  "reader_gbps": 0.4692092697880624
+                }
+              }
+            },
+            {
+              "wall_ms": 5336.429753995617,
+              "effective_gbps": 3.8113580216756855,
+              "physical_read_bytes": 20343226368,
+              "physical_to_payload_ratio": 1.0002056152653014,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11770.696677136584,
+                  "calls": 1050,
+                  "reader_gbps": 0.600232706167968
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 17602.595274947817,
+                  "calls": 1890,
+                  "reader_gbps": 0.7512132792611288
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 110.27539093629457,
+                  "calls": 104,
+                  "reader_gbps": 0.4587053337151352
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.8113580216756855
+        }
+      ],
+      "direct": false,
+      "affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "note": "CPU read-only; ordinary RAM; no validation/H2D. Cold uses advisory per-file DONTNEED; verify physical_to_payload_ratio before claiming disk bandwidth. Warm priming is excluded. GB=1e9 bytes."
+    },
+    "buffered_blocks": {
+      "files": [
+        {
+          "component": "text",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-text.bf16.hyt",
+          "file_bytes": 7843594240,
+          "resident_bytes": 7065157120
+        },
+        {
+          "component": "dit",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-turbo.fp8.hyt",
+          "file_bytes": 13223600128,
+          "resident_bytes": 13223303320
+        },
+        {
+          "component": "vae",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-vae.bf16.hyt",
+          "file_bytes": 50848256,
+          "resident_bytes": 50583910
+        }
+      ],
+      "trials": [
+        {
+          "cache": "cold",
+          "threads": 4,
+          "block_mib": 1,
+          "samples": [
+            {
+              "wall_ms": 6163.113820992294,
+              "effective_gbps": 3.3001247325212155,
+              "physical_read_bytes": 20343152640,
+              "physical_to_payload_ratio": 1.0002019903162265,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 7416.796054196311,
+                  "calls": 6930,
+                  "reader_gbps": 0.9525888359843252
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 11341.165908932453,
+                  "calls": 12910,
+                  "reader_gbps": 1.1659562540730624
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 55.369693945976906,
+                  "calls": 137,
+                  "reader_gbps": 0.9135667256776551
+                }
+              }
+            },
+            {
+              "wall_ms": 5749.3203390040435,
+              "effective_gbps": 3.5376432605464,
+              "physical_read_bytes": 20343152640,
+              "physical_to_payload_ratio": 1.0002019903162265,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 7051.016319164773,
+                  "calls": 6930,
+                  "reader_gbps": 1.0020054982424011
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10802.05980905157,
+                  "calls": 12910,
+                  "reader_gbps": 1.2241464640771154
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 72.70113195409067,
+                  "calls": 137,
+                  "reader_gbps": 0.695778850210238
+                }
+              }
+            },
+            {
+              "wall_ms": 5501.588681989233,
+              "effective_gbps": 3.6969401977622804,
+              "physical_read_bytes": 20343152640,
+              "physical_to_payload_ratio": 1.0002019903162265,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6803.042610961711,
+                  "calls": 6930,
+                  "reader_gbps": 1.0385290118006825
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10249.802464997629,
+                  "calls": 12910,
+                  "reader_gbps": 1.2901032351751824
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 47.96676202386152,
+                  "calls": 137,
+                  "reader_gbps": 1.0545616978447816
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.5376432605464
+        },
+        {
+          "cache": "cold",
+          "threads": 4,
+          "block_mib": 32,
+          "samples": [
+            {
+              "wall_ms": 5605.669904995011,
+              "effective_gbps": 3.6282986145646228,
+              "physical_read_bytes": 20343152640,
+              "physical_to_payload_ratio": 1.0002019903162265,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6788.163279910805,
+                  "calls": 490,
+                  "reader_gbps": 1.040805418000027
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10454.596729017794,
+                  "calls": 774,
+                  "reader_gbps": 1.264831505484796
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 52.700923959491774,
+                  "calls": 104,
+                  "reader_gbps": 0.9598296614093711
+                }
+              }
+            },
+            {
+              "wall_ms": 5540.447238992783,
+              "effective_gbps": 3.67101128711362,
+              "physical_read_bytes": 20343152640,
+              "physical_to_payload_ratio": 1.0002019903162265,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6833.019964120467,
+                  "calls": 490,
+                  "reader_gbps": 1.0339728490621223
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10327.246887914953,
+                  "calls": 774,
+                  "reader_gbps": 1.2804287012324689
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 57.28263194032479,
+                  "calls": 104,
+                  "reader_gbps": 0.8830584120627819
+                }
+              }
+            },
+            {
+              "wall_ms": 5527.233321001404,
+              "effective_gbps": 3.679787548088353,
+              "physical_read_bytes": 20343095296,
+              "physical_to_payload_ratio": 1.0001991709113904,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6841.431283115526,
+                  "calls": 490,
+                  "reader_gbps": 1.0327016128096798
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 10262.692185031483,
+                  "calls": 774,
+                  "reader_gbps": 1.2884828933373524
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 64.85418979718816,
+                  "calls": 104,
+                  "reader_gbps": 0.7799636408717133
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.67101128711362
+        }
+      ],
+      "note": "CPU read-only; ordinary RAM; no validation/H2D. Cold uses advisory per-file DONTNEED; verify physical_to_payload_ratio before claiming disk bandwidth. Warm priming is excluded. GB=1e9 bytes."
+    },
+    "direct_threads": {
+      "files": [
+        {
+          "component": "text",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-text.bf16.hyt",
+          "file_bytes": 7843594240,
+          "resident_bytes": 7065157120
+        },
+        {
+          "component": "dit",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-turbo.fp8.hyt",
+          "file_bytes": 13223600128,
+          "resident_bytes": 13223303320
+        },
+        {
+          "component": "vae",
+          "path": "/mnt/NVME4TB/darask-inference-engine/local/hayate/hyt/krea2-vae.bf16.hyt",
+          "file_bytes": 50848256,
+          "resident_bytes": 50583910
+        }
+      ],
+      "trials": [
+        {
+          "cache": "cold",
+          "threads": 1,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 6347.715957002947,
+              "effective_gbps": 3.204151617332766,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2272.481137086288,
+                  "calls": 1050,
+                  "reader_gbps": 3.1090058371436022
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 4036.6818340553436,
+                  "calls": 1890,
+                  "reader_gbps": 3.27578537610817
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 34.469759004423395,
+                  "calls": 104,
+                  "reader_gbps": 1.467486616123679
+                }
+              }
+            },
+            {
+              "wall_ms": 6320.558355000685,
+              "effective_gbps": 3.217918925455091,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2248.8971532293363,
+                  "calls": 1050,
+                  "reader_gbps": 3.141609704051911
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 4038.2787138951244,
+                  "calls": 1890,
+                  "reader_gbps": 3.2744900134060964
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 30.038111057365313,
+                  "calls": 104,
+                  "reader_gbps": 1.683991044023951
+                }
+              }
+            },
+            {
+              "wall_ms": 6272.215363002033,
+              "effective_gbps": 3.2427209802096533,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 2217.077755194623,
+                  "calls": 1050,
+                  "reader_gbps": 3.186697942120571
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 4021.749102175818,
+                  "calls": 1890,
+                  "reader_gbps": 3.287948348852996
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 30.122539945296012,
+                  "calls": 104,
+                  "reader_gbps": 1.679271073815914
+                }
+              }
+            }
+          ],
+          "median_gbps": 3.217918925455091
+        },
+        {
+          "cache": "cold",
+          "threads": 4,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 4995.839276001789,
+              "effective_gbps": 4.071196695158196,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6044.264903888688,
+                  "calls": 1050,
+                  "reader_gbps": 1.1689026262655202
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 9449.071862123674,
+                  "calls": 1890,
+                  "reader_gbps": 1.39942880242082
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 332.80596300028265,
+                  "calls": 104,
+                  "reader_gbps": 0.15199219852907817
+                }
+              }
+            },
+            {
+              "wall_ms": 4999.462617997779,
+              "effective_gbps": 4.068246110448072,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6029.806269260007,
+                  "calls": 1050,
+                  "reader_gbps": 1.1717054917698133
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 9419.692688956275,
+                  "calls": 1890,
+                  "reader_gbps": 1.4037934948242112
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 351.74350895977113,
+                  "calls": 104,
+                  "reader_gbps": 0.14380907880743657
+                }
+              }
+            },
+            {
+              "wall_ms": 5014.2783539922675,
+              "effective_gbps": 4.056225624930946,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 6002.592713237391,
+                  "calls": 1050,
+                  "reader_gbps": 1.1770175751587075
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 9456.773926067399,
+                  "calls": 1890,
+                  "reader_gbps": 1.3982890384584792
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 330.28790513344575,
+                  "calls": 104,
+                  "reader_gbps": 0.15315096076425402
+                }
+              }
+            }
+          ],
+          "median_gbps": 4.068246110448072
+        },
+        {
+          "cache": "cold",
+          "threads": 8,
+          "block_mib": 8,
+          "samples": [
+            {
+              "wall_ms": 5014.225355000235,
+              "effective_gbps": 4.056268498127572,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11186.18348723976,
+                  "calls": 1050,
+                  "reader_gbps": 0.6315967486193416
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 17334.517974959454,
+                  "calls": 1890,
+                  "reader_gbps": 0.7628307484004861
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 924.0897779527586,
+                  "calls": 104,
+                  "reader_gbps": 0.05473917275880305
+                }
+              }
+            },
+            {
+              "wall_ms": 5016.616813998553,
+              "effective_gbps": 4.0543348444005485,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11369.196421001107,
+                  "calls": 1050,
+                  "reader_gbps": 0.6214297702649668
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 17302.522122045048,
+                  "calls": 1890,
+                  "reader_gbps": 0.7642413762992543
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 960.52425004018,
+                  "calls": 104,
+                  "reader_gbps": 0.05266281408083555
+                }
+              }
+            },
+            {
+              "wall_ms": 5148.349893002887,
+              "effective_gbps": 3.9505948066278003,
+              "physical_read_bytes": 20340039680,
+              "physical_to_payload_ratio": 1.0000489369108436,
+              "components": {
+                "text": {
+                  "bytes": 7065157120,
+                  "read_ms": 11185.078041249653,
+                  "calls": 1050,
+                  "reader_gbps": 0.6316591707223033
+                },
+                "dit": {
+                  "bytes": 13223303320,
+                  "read_ms": 17541.405363968806,
+                  "calls": 1890,
+                  "reader_gbps": 0.7538337462494042
+                },
+                "vae": {
+                  "bytes": 50583910,
+                  "read_ms": 952.5196300819516,
+                  "calls": 104,
+                  "reader_gbps": 0.05310537274244724
+                }
+              }
+            }
+          ],
+          "median_gbps": 4.0543348444005485
+        }
+      ],
+      "direct": true,
+      "note": "CPU read-only; ordinary RAM; no validation/H2D. Cold uses advisory per-file DONTNEED; verify physical_to_payload_ratio before claiming disk bandwidth. Warm priming is excluded. GB=1e9 bytes."
+    }
+  },
+  "notes": [
+    "GPU after timings and aligned-stage local L2 are pending integration; no speed/quality improvement claimed.",
+    "CPU benches use ordinary RAM or aligned anonymous mmap for O_DIRECT, no validation/H2D, no CPU pinning; not a model startup benchmark.",
+    "Cold is per-file advisory DONTNEED. Physical read ratios near 1 verify these cold samples. Warm-request samples still read from storage and do not establish a fully cached baseline.",
+    "VAE stage boundaries before round 6 recovered from next norm/conv inputs; final RGB is clamped. Up3 residual adds match BF16-rounded FP32 sums exactly in both traces.",
+    "Reference VAE trace vs pipeline decode is 0 for existing saved data; the 1.46% spread cannot be used as a VAE exception."
+  ]
+}

@@ -1,0 +1,24 @@
+[package]
+name = "hayate-kernels"
+description = "CUDA C++ kernels (sm_120a) and CPU SIMD kernels, with Rust bindings"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+build = "build.rs"
+links = "hayate_cuda"
+
+[lints]
+workspace = true
+
+[dependencies]
+hayate-core.workspace = true
+
+[features]
+# Compile cu/ with nvcc and link it. Real builds always enable this; without
+# it the workspace still type-checks where no CUDA toolkit is installed.
+cuda = []
+
+[[example]]
+name = "gpu_probe"
+required-features = ["cuda"]

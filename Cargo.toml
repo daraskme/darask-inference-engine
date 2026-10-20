@@ -1,0 +1,57 @@
+[workspace]
+resolver = "3"
+members = [
+    "common/core", "common/llm", "common/cuda", "common/json", "common/text", "common/formats", "common/cli", "common/api",
+    "engines/kogarashi/crates/kogarashi-engine",
+    "engines/hayate/crates/kernels", "engines/hayate/crates/models",
+    "engines/hayate/crates/server", "engines/hayate/crates/cli",
+    "engines/tsumuji/crates/tsumuji-kernels", "engines/tsumuji/crates/tsumuji-model",
+    "engines/tsumuji/crates/tsumuji-pack", "engines/tsumuji/crates/tsumuji-bench",
+    "engines/tsumuji/crates/tsumuji-engine", "engines/tsumuji/crates/tsumuji-server",
+]
+# CPU-only checks are the default. CUDA is enabled explicitly when building an engine.
+default-members = [
+    "common/core", "common/llm", "common/json", "common/text", "common/formats", "common/cli", "common/api",
+    "engines/kogarashi/crates/kogarashi-engine",
+    "engines/hayate/crates/cli", "engines/hayate/crates/server",
+    "engines/hayate/crates/models", "engines/hayate/crates/kernels",
+    "engines/tsumuji/crates/tsumuji-model", "engines/tsumuji/crates/tsumuji-pack",
+]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.89"
+license = "Apache-2.0"
+
+[workspace.dependencies]
+darask-api = { path = "common/api" }
+tsumuji-engine = { path = "engines/tsumuji/crates/tsumuji-engine" }
+darask-text = { path = "common/text" }
+darask-formats = { path = "common/formats" }
+kogarashi-engine = { path = "engines/kogarashi/crates/kogarashi-engine" }
+hayate-core = { path = "common/core" }
+hayate-llm = { path = "common/llm" }
+darask-json = { path = "common/json" }
+hayate-kernels = { path = "engines/hayate/crates/kernels" }
+hayate-models = { path = "engines/hayate/crates/models" }
+hayate-server = { path = "engines/hayate/crates/server" }
+tsumuji-cuda = { path = "common/cuda" }
+tsumuji-kernels = { path = "engines/tsumuji/crates/tsumuji-kernels" }
+tsumuji-model = { path = "engines/tsumuji/crates/tsumuji-model" }
+tsumuji-pack = { path = "engines/tsumuji/crates/tsumuji-pack" }
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+debug = "line-tables-only"
+
+[profile.bench]
+inherits = "release"

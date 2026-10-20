@@ -1,0 +1,11 @@
+[package]
+name = "tsumuji-kernels"
+description = "CUDA C++ kernels compiled to sm_120a cubins and embedded in the binary"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[lints]
+workspace = true

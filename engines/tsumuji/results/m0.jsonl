@@ -1,0 +1,62 @@
+{"bench":"info","name":"NVIDIA RTX PRO 6000 Blackwell Workstation Edition","sms":188,"l2":134217728,"l2_persist":83886080,"smem_block":101376,"smem_sm":102400,"clock_khz":2617000,"vram":101971001344}
+{"bench":"bw","kernel":"bw_read","gbps":1604.8,"grid":376}
+{"bench":"bw","kernel":"bw_read_cs","gbps":1573.0,"grid":376}
+{"bench":"l2","mib":8,"gbps":4480.3}
+{"bench":"l2","mib":16,"gbps":5936.2}
+{"bench":"l2","mib":32,"gbps":7077.1}
+{"bench":"l2","mib":48,"gbps":7646.2}
+{"bench":"l2","mib":64,"gbps":7948.7}
+{"bench":"l2","mib":80,"gbps":7986.4}
+{"bench":"l2","mib":96,"gbps":8209.0}
+{"bench":"l2","mib":112,"gbps":8271.8}
+{"bench":"l2","mib":128,"gbps":7591.8}
+{"bench":"l2","mib":160,"gbps":1486.0}
+{"bench":"l2","mib":192,"gbps":1507.5}
+{"bench":"l2","mib":256,"gbps":1506.4}
+{"bench":"l2","mib":512,"gbps":1491.3}
+{"bench":"pdl_empty","stream_us":0.931,"graph_us":0.686,"graph_pdl_us":0.425}
+{"bench":"pdl_step","step_bytes":770048,"graph_us":1.751,"graph_pdl_us":0.687,"ideal_us":0.497,"peak_gbps":1548.6}
+{"bench":"pdl_step","step_bytes":1540096,"graph_us":2.152,"graph_pdl_us":1.005,"ideal_us":0.994,"peak_gbps":1548.6}
+{"bench":"pdl_step","step_bytes":3080192,"graph_us":3.262,"graph_pdl_us":2.039,"ideal_us":1.989,"peak_gbps":1548.6}
+{"bench":"pdl_step","step_bytes":6160384,"graph_us":5.108,"graph_pdl_us":3.925,"ideal_us":3.978,"peak_gbps":1548.6}
+{"bench":"pdl_step","step_bytes":12320768,"graph_us":9.364,"graph_pdl_us":8.083,"ideal_us":7.956,"peak_gbps":1548.6}
+{"bench":"gemv_nvfp4","n":1280,"k":2560,"pdl":false,"us":3.231,"gbps":570.5,"max_rel":1.748e-8}
+{"bench":"gemv_nvfp4","n":1280,"k":2560,"pdl":true,"us":2.987,"gbps":617.0,"max_rel":1.748e-8}
+{"bench":"zerocopy","tokens":1,"host_gib":8,"host_us":2.243,"host_gbps":1.142,"dev_us":0.922,"dev_gbps":2.778}
+{"bench":"zerocopy","tokens":16,"host_gib":8,"host_us":7.045,"host_gbps":5.814,"dev_us":1.024,"dev_gbps":40.003}
+{"bench":"zerocopy","tokens":256,"host_gib":8,"host_us":73.457,"host_gbps":8.922,"dev_us":1.126,"dev_gbps":581.777}
+{"bench":"zerocopy","tokens":4096,"host_gib":8,"host_us":1183.091,"host_gbps":8.863,"dev_us":8.581,"dev_gbps":1221.957}
+{"bench":"zerocopy","tokens":16384,"host_gib":8,"host_us":4700.303,"host_gbps":8.923,"dev_us":34.516,"dev_gbps":1215.160}
+{"bench":"mma","kernel":"mma_bf16","tflops":502.5}
+{"bench":"mma","kernel":"mma_fp8","tflops":999.5}
+{"bench":"mma","kernel":"mma_nvfp4","tflops":2052.0}
+{"bench":"zerocopy","tokens":1,"host_gib":48,"host_us":2.130,"host_gbps":1.202,"dev_us":0.922,"dev_gbps":2.778}
+{"bench":"zerocopy","tokens":16,"host_gib":48,"host_us":5.924,"host_gbps":6.914,"dev_us":1.027,"dev_gbps":39.900}
+{"bench":"zerocopy","tokens":256,"host_gib":48,"host_us":69.527,"host_gbps":9.426,"dev_us":1.126,"dev_gbps":581.818}
+{"bench":"zerocopy","tokens":4096,"host_gib":48,"host_us":1557.816,"host_gbps":6.731,"dev_us":8.596,"dev_gbps":1219.785}
+{"bench":"zerocopy","tokens":16384,"host_gib":48,"host_us":6776.891,"host_gbps":6.189,"dev_us":31.598,"dev_gbps":1327.392}
+{"bench":"gemv_shape","shape":"gdn_in","old_pct":82.3,"new_pct":102.1,"best":"R4 P2 S4","us":53.948}
+{"bench":"gemv_shape","shape":"gdn_out","old_pct":81.6,"new_pct":99.3,"best":"R4 P2 S8","us":20.679}
+{"bench":"gemv_shape","shape":"qsa_proj","old_pct":80.5,"new_pct":101.7,"best":"R4 P2 S2","us":45.834}
+{"bench":"gemv_shape","shape":"qsa_o","old_pct":73.0,"new_pct":99.1,"best":"R4 P2 S8","us":20.727}
+{"bench":"gemv_shape","shape":"gr_down","old_pct":34.1,"new_pct":71.1,"best":"R1 P4 S8","us":6.092}
+{"bench":"gemv_shape","shape":"gr_up","old_pct":68.6,"new_pct":107.1,"best":"R4 P2 S1","us":3.994}
+{"bench":"gemv_shape","shape":"router","old_pct":35.6,"new_pct":45.2,"best":"R1 P8 S1","us":3.790}
+{"bench":"gemv_shape","shape":"shared_gu","old_pct":59.4,"new_pct":72.4,"best":"R2 P8 S1","us":5.912}
+{"bench":"gemv_shape","shape":"shared_dn","old_pct":50.9,"new_pct":94.6,"best":"R2 P8 S1","us":2.260}
+{"bench":"gemv_shape","shape":"ple_kv","old_pct":92.0,"new_pct":101.5,"best":"R4 P2 S2","us":42.163}
+{"bench":"gemv_shape","shape":"lm_head","old_pct":101.2,"new_pct":106.4,"best":"R4 P2 S2","us":779.878}
+{"bench":"moe","us_per_layer":46.554,"gbps":593.9}
+{"bench":"moe","us_per_layer":0.000,"gbps":inf}
+{"bench":"moe","us_per_layer":0.000,"gbps":inf}
+{"bench":"gemv_shape","shape":"gdn_in","old_pct":NaN,"new_pct":91.5,"best":"R1 P8 S1","us":28.857}
+{"bench":"gemv_shape","shape":"gdn_out","old_pct":NaN,"new_pct":74.3,"best":"R1 P8 S1","us":13.253}
+{"bench":"gemv_shape","shape":"qsa_proj","old_pct":NaN,"new_pct":95.9,"best":"R4 P2 S1","us":23.305}
+{"bench":"gemv_shape","shape":"qsa_o","old_pct":NaN,"new_pct":76.2,"best":"R2 P4 S16","us":12.918}
+{"bench":"gemv_shape","shape":"gr_down","old_pct":NaN,"new_pct":42.3,"best":"R1 P4 S16","us":4.907}
+{"bench":"gemv_shape","shape":"gr_up","old_pct":NaN,"new_pct":65.7,"best":"R4 P2 S1","us":3.120}
+{"bench":"gemv_shape","shape":"router","old_pct":NaN,"new_pct":27.0,"best":"R2 P8 S1","us":3.050}
+{"bench":"gemv_shape","shape":"shared_gu","old_pct":NaN,"new_pct":59.6,"best":"R1 P8 S1","us":3.440}
+{"bench":"gemv_shape","shape":"shared_dn","old_pct":NaN,"new_pct":48.7,"best":"R2 P4 S1","us":2.107}
+{"bench":"gemv_shape","shape":"ple_kv","old_pct":NaN,"new_pct":88.8,"best":"R2 P4 S1","us":23.103}
+{"bench":"gemv_shape","shape":"lm_head","old_pct":NaN,"new_pct":101.8,"best":"R1 P4 S1","us":390.758}

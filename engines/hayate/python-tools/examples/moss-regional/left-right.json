@@ -1,0 +1,23 @@
+{
+ "map": "left-right.png",
+ "regions": [
+  {
+   "color": "#ff2a2a",
+   "label": "character",
+   "prompt": "a girl with short black hair and red eyes, red jacket, waving, smiling"
+  },
+  {
+   "color": "#2a7bff",
+   "label": "character",
+   "prompt": "a tall boy with silver hair, blue hoodie, arms crossed, calm expression"
+  },
+  {
+   "color": "#30d25a",
+   "label": "text",
+   "text": "おはよう！",
+   "prompt": "black Japanese text in a white round speech bubble"
+  }
+ ],
+ "isolate_until": 0.2,
+ "layout": "native"
+}

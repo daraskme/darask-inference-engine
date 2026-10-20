@@ -1,0 +1,25 @@
+[package]
+name = "hayate-cli"
+description = "hayate command-line interface"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+hayate-core.workspace = true
+hayate-kernels.workspace = true
+hayate-models.workspace = true
+hayate-llm.workspace = true
+hayate-server.workspace = true
+
+[[bin]]
+name = "hayate"
+path = "src/main.rs"
+
+[features]
+default = []
+cuda = ["hayate-models/cuda"]

@@ -1,0 +1,45 @@
+{
+  "positions": 537,
+  "vocab": 248320,
+  "finite": true,
+  "mean_kld": 0.015450459151093412,
+  "p99_kld": 0.19131824567534883,
+  "max_kld": 0.37155225439273926,
+  "top1_agreement": 0.9646182495344506,
+  "mean_nll_delta": 0.0017882898427161863,
+  "gate": {
+    "mean_kld_max": 0.15,
+    "top1_agreement_min": 0.82
+  },
+  "passed": true,
+  "model": "Ornith-1.5-122B-Q4_K_M.gguf",
+  "model_bytes": 75843911648,
+  "reference_revision": "9aa51ce4fdd3435a91531ffe16a17414ccc6dc6f",
+  "native_precision": "FP32 activations/state/KV, Q4_K/Q6_K weights",
+  "mtp": false,
+  "context": 4096,
+  "generated_tokens": 128,
+  "trials": 3,
+  "performance": {
+    "english": {
+      "native_median_tps": 100.9,
+      "reference_median_tps": 149.7858769609271,
+      "native_repeat_ids_identical": true
+    },
+    "japanese": {
+      "native_median_tps": 100.8,
+      "reference_median_tps": 146.1091815239763,
+      "native_repeat_ids_identical": true
+    },
+    "code": {
+      "native_median_tps": 100.8,
+      "reference_median_tps": 149.057183969428,
+      "native_repeat_ids_identical": true
+    },
+    "json": {
+      "native_median_tps": 100.8,
+      "reference_median_tps": 150.22012571177135,
+      "native_repeat_ids_identical": true
+    }
+  }
+}

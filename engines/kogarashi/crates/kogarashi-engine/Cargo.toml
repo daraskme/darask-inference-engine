@@ -1,0 +1,22 @@
+[package]
+name = "kogarashi-engine"
+description = "Native Rust/CUDA Ornith Qwen3.5 MoE decoder; no llama.cpp linkage"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+build = "build.rs"
+[lints]
+workspace = true
+[features]
+default = []
+cuda = ["dep:tsumuji-cuda"]
+[dependencies]
+darask-formats.workspace = true
+darask-text.workspace = true
+darask-api.workspace = true
+darask-json.workspace = true
+tsumuji-cuda = { workspace = true, optional = true }
+[[bin]]
+name = "kogarashi-native"
+path = "src/main.rs"

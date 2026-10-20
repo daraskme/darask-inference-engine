@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "darask-inference-engine"
+version = "0.1.0"
+description = "Hayate, Kogarashi and Tsumuji with shared infrastructure"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+
+[project.optional-dependencies]
+quant-lab = ["numpy>=2,<3"]
+
+[project.scripts]
+kogarashi = "kogarashi.__main__:main"
+kogarashi-quant-lab = "kogarashi.quant_lab.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["engines/kogarashi", "engines/hayate/python-tools"]
+include = ["kogarashi*", "hayate_tools*"]

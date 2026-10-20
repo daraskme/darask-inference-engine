@@ -1,0 +1,99 @@
+diff --git a/ggml/src/ggml-cuda/fattn-common.cuh b/ggml/src/ggml-cuda/fattn-common.cuh
+index 6d1ce52..742b1af 100644
+--- a/ggml/src/ggml-cuda/fattn-common.cuh
++++ b/ggml/src/ggml-cuda/fattn-common.cuh
+@@ -1177,16 +1177,22 @@ void launch_fattn(
+             dst_tmp_meta.alloc((size_t(blocks_num.x) * ncols * (2 + DV/2)));
+         }
+     } else {
+-        // parallel_blocks must not be larger than what the tensor size allows:
+-        parallel_blocks = std::min(parallel_blocks, ntiles_KV);
++        // Keep the reduction partition independent of speculative width and KV padding.
++        const bool stable_quantized_vec = GGML_CUDA_CC_IS_NVIDIA(cc) && cc >= GGML_CUDA_CC_ADA_LOVELACE &&
++            Q->ne[1] <= 4 && (ggml_is_quantized(K->type) || ggml_is_quantized(V->type)) && !need_f16_K && !need_f16_V;
++        if (!stable_quantized_vec) {
++            parallel_blocks = std::min(parallel_blocks, ntiles_KV);
++        }
+ 
+         // If ntiles_total % blocks_per_wave != 0 then some efficiency is lost due to tail effects.
+         // Test whether parallel_blocks can be set to a higher value for better efficiency.
+         const int blocks_per_wave = nsm * max_blocks_per_sm;
++        const int partition_tiles = stable_quantized_vec ? ntiles_dst / ntiles_x : ntiles_dst;
++        const int parallel_blocks_max = stable_quantized_vec ? std::max(parallel_blocks, blocks_per_wave) : ntiles_KV;
+         int nwaves_best = 0;
+         int efficiency_percent_best = 0;
+-        for (int parallel_blocks_test = parallel_blocks; parallel_blocks_test <= ntiles_KV; ++parallel_blocks_test) {
+-            const int nblocks_total = ntiles_dst * parallel_blocks_test;
++        for (int parallel_blocks_test = parallel_blocks; parallel_blocks_test <= parallel_blocks_max; ++parallel_blocks_test) {
++            const int nblocks_total = partition_tiles * parallel_blocks_test;
+             const int nwaves = (nblocks_total + blocks_per_wave - 1) / blocks_per_wave;
+             const int efficiency_percent = 100 * nblocks_total / (nwaves*blocks_per_wave);
+ 
+diff --git a/ggml/src/ggml-cuda/fattn-vec.cuh b/ggml/src/ggml-cuda/fattn-vec.cuh
+index 57a2855..b45b2c6 100644
+--- a/ggml/src/ggml-cuda/fattn-vec.cuh
++++ b/ggml/src/ggml-cuda/fattn-vec.cuh
+@@ -549,7 +549,10 @@ void ggml_cuda_flash_attn_ext_vec_case(ggml_backend_cuda_context & ctx, ggml_ten
+     float logit_softcap;
+     memcpy(&logit_softcap, (const float *) KQV->op_params + 2, sizeof(float));
+ 
+-    if (Q->ne[1] == 1) {
++    const int cc = ggml_cuda_info().devices[ggml_cuda_get_device()].cc;
++    const bool stable_quantized_vec = GGML_CUDA_CC_IS_NVIDIA(cc) && cc >= GGML_CUDA_CC_ADA_LOVELACE &&
++        Q->ne[1] <= 4 && (ggml_is_quantized(type_K) || ggml_is_quantized(type_V));
++    if (Q->ne[1] == 1 || stable_quantized_vec) {
+         constexpr int cols_per_block = 1;
+         if (logit_softcap == 0.0f) {
+             constexpr bool use_logit_softcap = false;
+diff --git a/ggml/src/ggml-cuda/fattn.cu b/ggml/src/ggml-cuda/fattn.cu
+index d1fcf58..cdba118 100644
+--- a/ggml/src/ggml-cuda/fattn.cu
++++ b/ggml/src/ggml-cuda/fattn.cu
+@@ -648,7 +648,7 @@ static best_fattn_kernel ggml_cuda_get_best_fattn_kernel(const int device, const
+                 }
+             } else {
+                 if (cc >= GGML_CUDA_CC_ADA_LOVELACE) {
+-                    if (Q->ne[1] <= 2) {
++                    if (Q->ne[1] <= 4) {
+                         return BEST_FATTN_KERNEL_VEC;
+                     }
+                 } else {
+diff --git a/ggml/src/ggml-cuda/mmvf.cu b/ggml/src/ggml-cuda/mmvf.cu
+index bd5c5d4..528daf5 100644
+--- a/ggml/src/ggml-cuda/mmvf.cu
++++ b/ggml/src/ggml-cuda/mmvf.cu
+@@ -809,6 +809,9 @@ bool ggml_cuda_should_use_mmvf(enum ggml_type type, int cc, const int64_t * src0
+     switch (type) {
+         case GGML_TYPE_F32:
+             if (GGML_CUDA_CC_IS_NVIDIA(cc)) {
++                if (cc >= GGML_CUDA_CC_ADA_LOVELACE) {
++                    return ne11 <= 4;
++                }
+                 if (ampere_mma_available(cc)) {
+                     return ne11 <= 3;
+                 }
+diff --git a/ggml/src/ggml-cuda/mmvq.cu b/ggml/src/ggml-cuda/mmvq.cu
+index 2f8c31b..e20d4d4 100644
+--- a/ggml/src/ggml-cuda/mmvq.cu
++++ b/ggml/src/ggml-cuda/mmvq.cu
+@@ -1222,6 +1222,20 @@ static void mul_mat_vec_q_switch_ncols_dst(
+     };
+ 
+     if (has_ids && ncols_dst > 1) {
++        if (GGML_CUDA_CC_IS_NVIDIA(cc) && cc >= GGML_CUDA_CC_ADA_LOVELACE && ncols_dst <= 4) {
++            // Use the single-token reduction order for short speculative batches.
++            for (int token = 0; token < ncols_dst; ++token) {
++                mul_mat_vec_q_switch_ncols_dst<type>(
++                    vx, (const block_q8_1 *) vy + token*stride_col_y, ids + token*ids_stride,
++                    fusion, dst + token*stride_col_dst, ncols_x, nrows_x, 1,
++                    stride_row_x, stride_col_y, stride_col_dst,
++                    nchannels_x, nchannels_y, nchannels_dst,
++                    stride_channel_x, stride_channel_y, stride_channel_dst,
++                    nsamples_x, nsamples_dst, stride_sample_x, stride_sample_y, stride_sample_dst,
++                    ids_stride, stream);
++            }
++            return;
++        }
+         // Multi-token MUL_MAT_ID path - dedicated MoE kernel
+         mul_mat_vec_q_moe_launch<type>(
+             vx, vy, ids, fusion, dst, ncols_x, nchannels_y_fd, nrows_x,

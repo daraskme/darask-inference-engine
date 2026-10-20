@@ -1,0 +1,6 @@
+[project]
+name = "hayate-tools"
+version = "0.0.1"
+description = "Offline tools for Hayate: convert, calibrate, reference outputs"
+requires-python = ">=3.12"
+dependencies = []

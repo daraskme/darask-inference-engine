@@ -1,0 +1,2 @@
+# Preserve whitespace in vendored patch context lines.
+*.patch -whitespace
