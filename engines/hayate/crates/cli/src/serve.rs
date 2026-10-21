@@ -219,6 +219,8 @@ mod gpu {
         device: &'d Device,
         config: Config,
         glm: Option<Session<glm::Glm<'d>>>,
+        vision: Option<darask_vision::encoder::Encoder>,
+        vision_bytes: usize,
         /// The LoRA adapters the loaded GLM runs with.
         glm_loras: Vec<hayate_models::glm53::lora::Spec>,
         /// GLM's device memory now (measured), and what it was loaded with.
@@ -239,6 +241,8 @@ mod gpu {
             device: &device,
             config,
             glm: None,
+            vision: None,
+            vision_bytes: 0,
             glm_loras: Vec::new(),
             glm_bytes: 0,
             glm_default: 0,
@@ -264,7 +268,7 @@ mod gpu {
                     .collect();
                 rows.push(format!(
                     r#"{{"id":"glm53","variant":"fp8","vram_bytes":{},"context_length":{},"budget":{},"loras":[{}]}}"#,
-                    self.glm_bytes,
+                    self.glm_bytes + self.vision_bytes,
                     session.engine.capacity(),
                     self.glm_budget(session).json(),
                     loras.join(",")
@@ -287,6 +291,8 @@ mod gpu {
         fn unload(&mut self, request: &Value) -> Result<()> {
             check_glm(request)?;
             self.glm.take();
+            self.vision.take();
+            self.vision_bytes = 0;
             self.glm_bytes = 0;
             self.glm_default = 0;
             self.glm_tok_s = 0.;
@@ -296,7 +302,7 @@ mod gpu {
         fn ledger(&self) -> Vec<(&'static str, usize)> {
             let mut rows = Vec::new();
             if self.glm.is_some() {
-                rows.push(("glm53", self.glm_bytes));
+                rows.push(("glm53", self.glm_bytes + self.vision_bytes));
             }
             rows
         }
@@ -307,13 +313,22 @@ mod gpu {
             self.glm.iter().map(|s| self.glm_budget(s)).collect()
         }
         fn shrink_llm(&mut self, bytes: usize) -> Result<usize> {
-            let target = self.glm_bytes.saturating_sub(bytes);
-            self.resize_glm(target)
+            let (before, _) = self.device.memory_info()?;
+            self.vision.take();
+            self.vision_bytes = 0;
+            self.device.synchronize()?;
+            let (after, _) = self.device.memory_info()?;
+            let released = after.saturating_sub(before);
+            let target = self
+                .glm_bytes
+                .saturating_sub(bytes.saturating_sub(released));
+            Ok(released + self.resize_glm(target)?)
         }
         fn grow_llm(&mut self, free: usize) -> Result<usize> {
             if self.glm.is_none() || self.glm_bytes >= self.glm_default {
                 return Ok(0);
             }
+            let free = free.saturating_sub(if self.vision.is_some() { 1 << 30 } else { 0 });
             let target = self.glm_default.min(self.glm_bytes + free);
             self.resize_glm(target)
         }
@@ -329,15 +344,71 @@ mod gpu {
             let mut chat = Chat::parse(request)?;
             let render_ms = start.elapsed().as_secs_f64() * 1000.;
 
+            if self.glm.is_none() {
+                return Err(Error::InvalidPlan("glm53 is not loaded".into()));
+            }
+            let image_embeddings = if chat.images.is_empty() {
+                Vec::new()
+            } else {
+                // Retain the encoder across a caption batch. Only evict language experts when
+                // there is not enough free memory; unconditional shrink/regrow copies many GiB.
+                let reserve = if self.vision.is_none() {
+                    4usize << 30
+                } else {
+                    1usize << 30
+                };
+                let (free, _) = self.device.memory_info()?;
+                if free < reserve {
+                    self.resize_glm(self.glm_bytes.saturating_sub(reserve - free))?;
+                }
+                if self.vision.is_none() {
+                    let (before, _) = self.device.memory_info()?;
+                    self.vision = Some(
+                        darask_vision::encoder::Encoder::load(
+                            &self.config.glm_source,
+                            darask_vision::Kind::Glm,
+                        )
+                        .map_err(Error::Weights)?,
+                    );
+                    self.device.synchronize()?;
+                    let (after, _) = self.device.memory_info()?;
+                    self.vision_bytes = before.saturating_sub(after);
+                }
+                let encoder = self.vision.as_mut().unwrap();
+                chat.images
+                    .iter()
+                    .map(|image| encoder.encode(image).map_err(Error::Weights))
+                    .collect::<Result<Vec<_>>>()?
+            };
             let session = self
                 .glm
                 .as_mut()
                 .ok_or_else(|| Error::InvalidPlan("glm53 is not loaded".into()))?;
+            if !chat.images.is_empty() || session.engine.model.has_images() {
+                session.invalidate()?;
+            }
             let start = Instant::now();
             let engine = &mut session.engine;
             let prompt = engine
                 .prompt_tokens
                 .encode(&chat.prompt, &glm::MARKERS, |s| engine.tokenizer.encode(s))?;
+            let spans = if chat.images.is_empty() {
+                Vec::new()
+            } else {
+                darask_vision::locate(
+                    &prompt,
+                    std::mem::take(&mut chat.images),
+                    darask_vision::Kind::Glm,
+                )
+                .map_err(Error::InvalidPlan)?
+            };
+            engine.model.set_image_embeddings(
+                spans
+                    .iter()
+                    .zip(image_embeddings)
+                    .map(|(s, v)| (s.start, v))
+                    .collect(),
+            )?;
             let tokenize_ms = start.elapsed().as_secs_f64() * 1000.;
             let capacity = engine.capacity();
             if chat.max_tokens_default {

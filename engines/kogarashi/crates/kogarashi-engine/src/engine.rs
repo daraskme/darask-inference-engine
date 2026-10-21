@@ -20,6 +20,10 @@ struct Weight {
 #[derive(Debug)]
 pub struct Engine {
     graph: Option<Graph>,
+    vision: Option<darask_vision::encoder::Encoder>,
+    visual: Option<DeviceBuffer>,
+    visual_map: Option<DeviceBuffer>,
+    rotary: Option<DeviceBuffer>,
     module: Module,
     weights: HashMap<String, Weight>,
     buf: HashMap<&'static str, DeviceBuffer>,
@@ -155,6 +159,10 @@ impl Engine {
         }
         let mut engine = Self {
             graph: None,
+            vision: None,
+            visual: None,
+            visual_map: None,
+            rotary: None,
             module,
             weights,
             buf,
@@ -305,7 +313,16 @@ impl Engine {
             "embed",
             12,
             256,
-            &mut args![w.data.ptr, w.ty, self.b("x"), self.b("token"), h],
+            &mut args![
+                w.data.ptr,
+                w.ty,
+                self.b("x"),
+                self.b("token"),
+                h,
+                self.b("pos"),
+                self.visual.as_ref().map_or(0, |b| b.ptr),
+                self.visual_map.as_ref().map_or(0, |b| b.ptr)
+            ],
             s,
         )?;
         self.trace("x", "embed", s)?;
@@ -427,7 +444,8 @@ impl Engine {
                         self.b("pos"),
                         ctx,
                         c.theta,
-                        c.eps
+                        c.eps,
+                        self.rotary.as_ref().map_or(0, |b| b.ptr)
                     ],
                     s,
                 )?;
@@ -649,17 +667,64 @@ impl Engine {
             s,
         )
     }
+    pub fn set_images(&mut self, spans: &[darask_vision::Span], source: &Path) -> Res<()> {
+        if spans.is_empty() && self.visual.is_none() {
+            return Ok(());
+        }
+        cu(self.stream.synchronize())?;
+        self.graph = None;
+        self.visual = None;
+        self.visual_map = None;
+        self.rotary = None;
+        if !spans.is_empty() {
+            if self.vision.is_none() {
+                self.vision = Some(darask_vision::encoder::Encoder::load(
+                    source,
+                    darask_vision::Kind::Qwen,
+                )?);
+            }
+            let vision = self.vision.as_mut().unwrap();
+            if vision.hidden() != 3072 {
+                return Err("Ornith vision projection must have hidden size 3072".into());
+            }
+            let mut values = Vec::new();
+            let mut map = vec![-1i32; self.context];
+            for s in spans {
+                if s.start + s.image.tokens() > self.context {
+                    return Err("image exceeds context".into());
+                }
+                let start = values.len() / 3072;
+                values.extend(vision.encode(&s.image)?);
+                for i in 0..s.image.tokens() {
+                    map[s.start + i] = (start + i) as i32;
+                }
+            }
+            self.visual = Some(cu(DeviceBuffer::from_slice(&values))?);
+            self.visual_map = Some(cu(DeviceBuffer::from_slice(&map))?);
+            self.rotary = Some(cu(DeviceBuffer::from_slice(&darask_vision::positions(
+                spans,
+                self.context,
+            )))?);
+        }
+        cu(tsumuji_cuda::synchronize_context())?;
+        if std::env::var_os("DARASK_DUMP_DIR").is_none() {
+            self.graph = Some(self.stream.capture::<String>(|s| self.record(s))?);
+        }
+        Ok(())
+    }
     pub fn step(&mut self, token: u32) -> Res<u32> {
         if self.position >= self.context || token as usize >= self.config.vocab {
             return Err("token/context out of bounds".into());
         }
-        cu(self.buf["token"].upload(&[token]))?;
+        let input = [token];
+        cu(self.buf["token"].upload_on(&input, &self.stream))?;
         if let Some(g) = &self.graph {
             cu(g.launch(&self.stream))?;
         } else {
             self.record(&self.stream)?;
         }
         cu(self.stream.synchronize())?;
+        std::hint::black_box(&input);
         let next = cu(self.buf["token"].to_vec::<u32>(1))?[0];
         self.position += 1;
         Ok(next)

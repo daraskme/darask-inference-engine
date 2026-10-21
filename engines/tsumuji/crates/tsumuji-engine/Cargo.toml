@@ -10,6 +10,7 @@ license.workspace = true
 workspace = true
 
 [dependencies]
+darask-vision = { workspace = true, features = ["cuda"] }
 tsumuji-cuda.workspace = true
 tsumuji-kernels.workspace = true
 tsumuji-model.workspace = true

@@ -10,6 +10,7 @@ license.workspace = true
 workspace = true
 
 [dependencies]
+darask-vision.workspace = true
 darask-json.workspace = true
 hayate-core.workspace = true
 hayate-llm.workspace = true

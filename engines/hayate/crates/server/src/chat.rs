@@ -13,6 +13,7 @@ static IDS: AtomicU64 = AtomicU64::new(1);
 pub struct Chat {
     pub model: String,
     pub prompt: String,
+    pub images: Vec<darask_vision::Image>,
     pub params: SamplingParams,
     pub seed: u64,
     /// No `max_tokens` in the request: the server picks it from the context.
@@ -32,6 +33,9 @@ pub struct Chat {
 }
 impl Chat {
     pub fn parse(root: &Value) -> Result<Self> {
+        let (prepared, images) = darask_vision::chat(root, darask_vision::Kind::Glm, 1024)
+            .map_err(Error::InvalidPlan)?;
+        let root = &prepared;
         let model = root.get("model")?.string()?;
         if model != "glm53" {
             return Err(Error::InvalidPlan("chat model: glm53".into()));
@@ -133,6 +137,7 @@ impl Chat {
             .as_secs();
         let id = IDS.fetch_add(1, Ordering::Relaxed);
         Ok(Self {
+            images,
             model: model.into(),
             prompt: template::render(root)?,
             params,

@@ -10,8 +10,9 @@ build = "build.rs"
 workspace = true
 [features]
 default = []
-cuda = ["dep:tsumuji-cuda"]
+cuda = ["darask-vision/cuda", "dep:tsumuji-cuda"]
 [dependencies]
+darask-vision.workspace = true
 darask-formats.workspace = true
 darask-text.workspace = true
 darask-api.workspace = true

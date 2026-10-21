@@ -97,11 +97,12 @@ TSJ_DEVICE void load_inject(const float* __restrict__ di, int S, int N, int n, i
 // grid = (ceil(H / 256), N), 256 threads, HC <= 4.
 extern "C" __global__ void __launch_bounds__(256) embed_streams(const __nv_bfloat16* __restrict__ table,
                                                                const int* __restrict__ tok3, float* __restrict__ R,
-                                                               float* __restrict__ ss, int H, int HC) {
+                                                               float* __restrict__ ss, int H, int HC, const int* pos, const float* visual, const int* image_map) {
   TSJ_PDL_ENTRY;
   __shared__ float red[32];
   const int n = blockIdx.y, k = blockIdx.x * blockDim.x + threadIdx.x;
-  const float v = k < H ? bf16_to_f(table[size_t(tok3[3 * n]) * H + k]) : 0.f;
+  const int row = visual ? image_map[*pos+n] : -1;
+  const float v = k < H ? (row >= 0 ? visual[size_t(row)*H+k] : bf16_to_f(table[size_t(tok3[3 * n]) * H + k])) : 0.f;
   float vals[4] = {};
   for (int i = 0; i < HC; ++i) {
     if (k < H) R[(size_t(n) * HC + i) * H + k] = v;

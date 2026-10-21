@@ -102,7 +102,11 @@ fn model_json(shared: &Shared) -> Json {
         ("id", Json::str(&shared.model.info.id)),
         ("object", Json::str("model")),
         ("created", Json::num(shared.started as f64)),
-        ("owned_by", Json::str("tsumuji")),
+        ("owned_by", Json::str("darask")),
+        (
+            "input_modalities",
+            Json::Arr(vec![Json::str("text"), Json::str("image")]),
+        ),
         ("max_model_len", Json::num(shared.model.ctx as f64)),
     ])
 }

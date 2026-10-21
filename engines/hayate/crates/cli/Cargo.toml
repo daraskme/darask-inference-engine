@@ -10,6 +10,7 @@ license.workspace = true
 workspace = true
 
 [dependencies]
+darask-vision.workspace = true
 hayate-core.workspace = true
 hayate-kernels.workspace = true
 hayate-models.workspace = true
@@ -22,4 +23,4 @@ path = "src/main.rs"
 
 [features]
 default = []
-cuda = ["hayate-models/cuda"]
+cuda = ["darask-vision/cuda", "hayate-models/cuda"]

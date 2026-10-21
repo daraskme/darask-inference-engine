@@ -1,4 +1,5 @@
-//! GLM-5.3-Flash chat template (checkpoint `chat_template.jinja`, text only).
+//! GLM-5.3-Flash chat template (checkpoint `chat_template.jinja`).
+//! The request processor expands images into their visual marker strings before rendering.
 //! Byte-identical to transformers `apply_chat_template` for text turns, plus
 //! three serve conventions the template lacks:
 //! - `enable_thinking: false` appends `</think>`, so the turn starts as an

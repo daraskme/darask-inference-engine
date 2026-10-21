@@ -1,3 +1,4 @@
+mod batch;
 use std::{
     path::{Path, PathBuf},
     process::{Command, ExitCode},
@@ -34,9 +35,18 @@ fn run() -> Result<i32, String> {
         .to_owned();
     if action == "help" || action == "--help" {
         println!(
-            "darask list | doctor | check | build|serve|run <hayate|kogarashi|tsumuji> [--dry-run] [-- native-options]\ndarask reference kogarashi [--dry-run] [-- native llama-server options]"
+            "darask batch <engine> --input DIR --out captions.jsonl [--jobs 2]\ndarask list | doctor | check | build|serve|run <hayate|kogarashi|tsumuji> [--dry-run] [-- native-options]\ndarask reference kogarashi [--dry-run] [-- native llama-server options]"
         );
         return Ok(0);
+    }
+    if action == "batch" {
+        if args.len() < 2 || args.iter().any(|a| a == "--help") {
+            println!(
+                "darask batch <hayate|kogarashi|tsumuji> --input FILE_OR_DIR --out captions.jsonl [--jobs 2] [--prompt TEXT] [--endpoint http://HOST:PORT/v1] [--model ID] [--max-tokens 256] [--detail auto|low|high] [--retry 2]"
+            );
+            return Ok(0);
+        }
+        return batch::run(&args[1], &args[2..]);
     }
     if action == "list" {
         for (name, model) in ENGINES {

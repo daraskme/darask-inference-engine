@@ -1,7 +1,7 @@
 [workspace]
 resolver = "3"
 members = [
-    "common/core", "common/llm", "common/cuda", "common/json", "common/text", "common/formats", "common/cli", "common/api",
+    "common/vision", "common/core", "common/llm", "common/cuda", "common/json", "common/text", "common/formats", "common/cli", "common/api",
     "engines/kogarashi/crates/kogarashi-engine",
     "engines/hayate/crates/kernels", "engines/hayate/crates/models",
     "engines/hayate/crates/server", "engines/hayate/crates/cli",
@@ -11,7 +11,7 @@ members = [
 ]
 # CPU-only checks are the default. CUDA is enabled explicitly when building an engine.
 default-members = [
-    "common/core", "common/llm", "common/json", "common/text", "common/formats", "common/cli", "common/api",
+    "common/vision", "common/core", "common/llm", "common/json", "common/text", "common/formats", "common/cli", "common/api",
     "engines/kogarashi/crates/kogarashi-engine",
     "engines/hayate/crates/cli", "engines/hayate/crates/server",
     "engines/hayate/crates/models", "engines/hayate/crates/kernels",
@@ -25,6 +25,7 @@ rust-version = "1.89"
 license = "Apache-2.0"
 
 [workspace.dependencies]
+darask-vision = { path = "common/vision" }
 darask-api = { path = "common/api" }
 tsumuji-engine = { path = "engines/tsumuji/crates/tsumuji-engine" }
 darask-text = { path = "common/text" }

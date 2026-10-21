@@ -74,6 +74,7 @@ impl Stats {
 #[derive(Debug, Clone, Copy)]
 pub struct GenRequest<'a> {
     pub prompt: &'a [u32],
+    pub images: &'a [darask_vision::Span],
     pub params: &'a Params,
     pub max_new: usize,
     /// Prompt positions to snapshot at (see the module docs).
@@ -327,6 +328,7 @@ impl Generator for EngineGen {
     ) -> Res<Stats> {
         let GenRequest {
             prompt,
+            images,
             params,
             max_new,
             marks,
@@ -377,8 +379,24 @@ impl Generator for EngineGen {
             sampling,
             ..Default::default()
         };
-        let Some(cached) = feed_prompt(e, &mut self.cache, prompt, marks, variant, cancelled)?
-        else {
+        // Image states must never alias a text prefix or a different image with identical placeholders.
+        let has_images = !images.is_empty();
+        let cached = if has_images {
+            self.cache = PrefixCache::new(SNAPSHOTS);
+            e.reset()?;
+            e.set_images(images)?;
+            for piece in prompt.chunks(PREFILL_PIECE) {
+                if cancelled() {
+                    return Ok(st);
+                }
+                e.prefill(piece)?;
+            }
+            Some(0)
+        } else {
+            e.set_images(&[])?;
+            feed_prompt(e, &mut self.cache, prompt, marks, variant, cancelled)?
+        };
+        let Some(cached) = cached else {
             st.prefill_s = t0.elapsed().as_secs_f64();
             return Ok(st);
         };
@@ -394,7 +412,8 @@ impl Generator for EngineGen {
             // and the new drafts need room: near the end of the context, steps stop drafting.
             let mut t1 = None;
             'steps: loop {
-                let toks = match self.drafts {
+                let drafts = if has_images { Some(0) } else { self.drafts };
+                let toks = match drafts {
                     _ if e.pos + 3 * N_MAX >= e.ctx => e.spec_step(0)?,
                     None => e.spec_auto()?,
                     Some(k) => e.spec_step(k)?,
@@ -445,7 +464,11 @@ impl Generator for EngineGen {
             }
             st.decode_s = t1.elapsed().as_secs_f64();
         }
-        self.cache.snapshot(e)?;
+        if has_images {
+            self.cache = PrefixCache::new(SNAPSHOTS);
+        } else {
+            self.cache.snapshot(e)?;
+        }
         Ok(st)
     }
 }
@@ -518,6 +541,9 @@ impl Generator for ScriptGen {
         emit: &mut dyn FnMut(u32) -> Flow,
         cancelled: &dyn Fn() -> bool,
     ) -> Res<Stats> {
+        if !req.images.is_empty() {
+            return Err("dry-run does not interpret images".into());
+        }
         let t0 = Instant::now();
         let mut st = Stats {
             sampling: "script",

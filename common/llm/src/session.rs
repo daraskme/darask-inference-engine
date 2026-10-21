@@ -213,6 +213,13 @@ impl<E: Engine> Session<E> {
             live: None,
         }
     }
+    /// Image placeholders do not identify the underlying pixels. Discard token-only snapshots
+    /// when entering or leaving an image conversation.
+    pub fn invalidate(&mut self) -> Result<()> {
+        self.cache = PrefixCache::default();
+        self.live = None;
+        self.engine.reset()
+    }
     pub fn generate(
         &mut self,
         prompt: &[u32],

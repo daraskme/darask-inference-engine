@@ -10,3 +10,7 @@ workspace = true
 [[bin]]
 name = "darask"
 path = "src/main.rs"
+
+[dependencies]
+darask-text.workspace = true
+darask-json.workspace = true

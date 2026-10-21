@@ -7,11 +7,18 @@ use darask_api::{
 use std::{path::Path, time::Instant};
 pub struct NativeGen {
     eng: Engine,
+    vision_source: std::path::PathBuf,
 }
 impl NativeGen {
     pub fn open(path: &Path, ctx: usize) -> Result<Self, String> {
         Ok(Self {
             eng: Engine::load(path, ctx)?,
+            vision_source: std::env::var_os("DARASK_ORNITH_VISION")
+                .map(std::path::PathBuf::from)
+                .unwrap_or_else(|| {
+                    std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                        .join("../../../../local/vision/ornith")
+                }),
         })
     }
 }
@@ -32,6 +39,7 @@ impl Generator for NativeGen {
             return Err("prompt/context limit".into());
         }
         self.eng.reset()?;
+        self.eng.set_images(req.images, &self.vision_source)?;
         let start = Instant::now();
         let mut next = 0;
         for &id in req.prompt {

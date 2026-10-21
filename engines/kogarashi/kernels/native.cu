@@ -39,8 +39,8 @@ __device__ __forceinline__ float weight(const uint8_t *w,int ty,size_t i){
     int sc=reinterpret_cast<const int8_t*>(b+192)[n*8+l/16+g*2];
     return __fmul_rn(__fmul_rn(half_at(b+208),float(sc)),float(q-32));
 }
-extern "C" __global__ void embed(const uint8_t*w,int ty,float*x,const int*token,int h){
-    int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<h)x[i]=weight(w,ty,size_t(*token)*h+i);
+extern "C" __global__ void embed(const uint8_t*w,int ty,float*x,const int*token,int h,const int*pos,const float*visual,const int*map){
+    int i=blockIdx.x*blockDim.x+threadIdx.x;if(i<h)x[i]=(visual && map[*pos]>=0)?visual[size_t(map[*pos])*h+i]:weight(w,ty,size_t(*token)*h+i);
 }
 // Four independent rows per block; selected experts share the input and stay on the device.
 extern "C" __global__ void gemv(const uint8_t*w,int ty,const float*x,float*y,int k,int rows,const int*ids,int selected){
@@ -142,12 +142,12 @@ extern "C" __global__ void gated_norm(float*y,const float*z,const float*w,float 
     int h=blockIdx.x,j=threadIdx.x;float v=y[h*128+j];float sc=rsqrtf(blocksum(v*v)/128+eps);
     y[h*128+j]=v*sc*w[j]*silu(z[h*128+j]);
 }
-extern "C" __global__ void qk_rope(float*qg,float*k,const float*v,const float*qn,const float*kn,float*kc,float*vc,const int*pos,int ctx,float theta,float eps){
+extern "C" __global__ void qk_rope(float*qg,float*k,const float*v,const float*qn,const float*kn,float*kc,float*vc,const int*pos,int ctx,float theta,float eps,const int*rotary){
     int h=blockIdx.x,j=threadIdx.x;bool isq=h<32;int head=isq?h:h-32;
     float*x=isq?qg+head*512:k+head*256;const float*w=isq?qn:kn;
     float a=x[j];float sc=rsqrtf(blocksum(a*a)/256+eps);
     __shared__ float tmp[256];tmp[j]=a*sc*w[j];__syncthreads();a=tmp[j];
-    if(j<64){int p=j%32;float an=(*pos)*powf(theta,-2.f*p/64);float sn,cs;sincosf(an,&sn,&cs);a=j<32?tmp[p]*cs-tmp[p+32]*sn:tmp[p]*sn+tmp[p+32]*cs;}
+    if(j<64){int p=j%32;int axis=(p%3==1 && p<33)?1:(p%3==2 && p<30)?2:0;float at=rotary?rotary[*pos*3+axis]:*pos;float an=at*powf(theta,-2.f*p/64);float sn,cs;sincosf(an,&sn,&cs);a=j<32?tmp[p]*cs-tmp[p+32]*sn:tmp[p]*sn+tmp[p+32]*cs;}
     x[j]=a;
     if(!isq){kc[(size_t(head)*ctx+*pos)*256+j]=a;vc[(size_t(head)*ctx+*pos)*256+j]=v[head*256+j];}
 }

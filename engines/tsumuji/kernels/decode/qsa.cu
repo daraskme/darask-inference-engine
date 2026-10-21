@@ -29,6 +29,7 @@ TSJ_DEVICE float kv_f(kv_t x) { return x; }
 #endif
 
 struct QsaDims {
+  const int* rotary;
   int AQ, AKV, AD, ROPE, IH, ID, IR, TOPB;
   float theta, eps;
 };
@@ -74,7 +75,14 @@ extern "C" __global__ void __launch_bounds__(256) qsa_prep_attn(
     const float r = rsqrtf(block_sum(ss, red) / float(len) + d.eps);
     for (int j = t; j < len; j += n) buf[j] = buf[j] * r * (1.f + w[j]);
     __syncthreads();
-    rope_inplace(buf, d.ROPE, at, d.theta, t, n);
+    if (d.rotary) {
+      for(int j=t;j<d.ROPE/2;j+=n) {
+        int axis=(j%3==1 && j<33)?1:(j%3==2 && j<30)?2:0;
+        float angle=d.rotary[at*3+axis]*powf(d.theta,-2.f*j/d.ROPE),sn,cs;
+        sincosf(angle,&sn,&cs);float a=buf[j],b=buf[j+d.ROPE/2];
+        buf[j]=a*cs-b*sn;buf[j+d.ROPE/2]=a*sn+b*cs;
+      }
+    } else rope_inplace(buf, d.ROPE, at, d.theta, t, n);
     __syncthreads();
   };
   const bool dense = (p + 1) / d.IR <= d.TOPB;

@@ -35,3 +35,12 @@ EXL3 random-tile decode fixtures:
   Copyright (c) 2025 Turboderp.
   Copyright (c) 2026 Peasant Smith and the Project Maya contributors.
   See licenses/EXL3-fixtures-MIT and the fixture directory README.
+
+Native vision tensor layouts, patch processing and model equations are based on
+Hugging Face Transformers 5.17.0 (Apache-2.0), Copyright The HuggingFace Inc.
+team, the Qwen Team and the GLM Team:
+https://github.com/huggingface/transformers
+  src/transformers/models/glm5_next/modeling_glm5_next.py
+  src/transformers/models/glm5_next/image_processing_glm5_next.py
+  src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py
+Vision execution is implemented in Rust/CUDA in common/vision.

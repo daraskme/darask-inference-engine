@@ -1,0 +1,132 @@
+{
+  "date_utc": "2026-10-21",
+  "gpu": "RTX PRO 6000 Blackwell 96 GB",
+  "reference": "Transformers 5.17.0 FP32, CUDA matmul and cuDNN TF32 disabled",
+  "gate_relative_rmse": 0.001,
+  "same_preprocessed_patches": true,
+  "models": {
+    "glm53": {
+      "encoder": {
+        "small": {
+          "shape": [
+            64,
+            4096
+          ],
+          "max_abs": 3.4248922020196915e-05,
+          "rms_diff": 1.4144345722820156e-06,
+          "relative_rmse": 7.992061976969479e-05,
+          "cosine": 0.9999999968103084
+        },
+        "large": {
+          "shape": [
+            192,
+            4096
+          ],
+          "max_abs": 1.6194768249988556e-05,
+          "rms_diff": 7.614742735858199e-07,
+          "relative_rmse": 4.926125988259552e-05,
+          "cosine": 0.9999999987890686
+        }
+      },
+      "api_checks": {
+        "image_color_red_blue_red": true,
+        "text_before_after_equal": true,
+        "multiple_images_order_labeled": true,
+        "caption": "The image shows a red square on the left and a blue circle on the right, with the text \"DARASK 42\" below them."
+      },
+      "batch": {
+        "http_jobs": 2,
+        "gpu_execution": "serial, shared model weights",
+        "successful_images": 2,
+        "resume_added_rows": 0,
+        "fixture": "two uniform-colour 224x224 PNGs, greedy colour identification, max_tokens=32",
+        "seconds_including_queue": [
+          0.639090633,
+          1.295066385
+        ]
+      }
+    },
+    "ornith": {
+      "encoder": {
+        "small": {
+          "shape": [
+            64,
+            3072
+          ],
+          "max_abs": 5.435943603515625e-05,
+          "rms_diff": 4.317428785409658e-07,
+          "relative_rmse": 5.297521950717435e-06,
+          "cosine": 0.9999999999859882
+        },
+        "large": {
+          "shape": [
+            192,
+            3072
+          ],
+          "max_abs": 2.3603439331054688e-05,
+          "rms_diff": 2.3304211919976654e-07,
+          "relative_rmse": 2.9212507068232165e-06,
+          "cosine": 0.9999999999957798
+        }
+      },
+      "api_checks": {
+        "image_color_red_blue_red": true,
+        "text_before_after_equal": true,
+        "multiple_images_order_labeled": true,
+        "caption": "The image contains a red square on the left and a blue circle on the right, with the text \"DARASK 42\" below them."
+      },
+      "batch": {
+        "http_jobs": 2,
+        "gpu_execution": "serial, shared model weights",
+        "successful_images": 2,
+        "resume_added_rows": 0,
+        "fixture": "two uniform-colour 224x224 PNGs, greedy colour identification, max_tokens=32",
+        "seconds_including_queue": [
+          1.010603666,
+          2.01413307
+        ]
+      }
+    },
+    "qwen38": {
+      "encoder": {
+        "small": {
+          "shape": [
+            64,
+            2560
+          ],
+          "max_abs": 1.2814998626708984e-06,
+          "rms_diff": 8.057424839508635e-08,
+          "relative_rmse": 2.5079169436629467e-06,
+          "cosine": 0.9999999999968834
+        },
+        "large": {
+          "shape": [
+            192,
+            2560
+          ],
+          "max_abs": 3.293156623840332e-06,
+          "rms_diff": 1.0626199372283674e-07,
+          "relative_rmse": 3.651774059007343e-06,
+          "cosine": 0.9999999999933329
+        }
+      },
+      "api_checks": {
+        "image_color_red_blue_red": true,
+        "text_before_after_equal": true,
+        "multiple_images_order_labeled": true,
+        "caption": " On the left is a red square, and on the right is a blue circle."
+      },
+      "batch": {
+        "http_jobs": 2,
+        "gpu_execution": "serial, shared model weights",
+        "successful_images": 2,
+        "resume_added_rows": 0,
+        "fixture": "two uniform-colour 224x224 PNGs, greedy colour identification, max_tokens=32",
+        "seconds_including_queue": [
+          0.238665769,
+          0.475911288
+        ]
+      }
+    }
+  }
+}

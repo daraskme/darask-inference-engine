@@ -253,6 +253,7 @@ pub struct Layer {
 
 #[derive(Debug)]
 pub struct Weights {
+    pub source: std::path::PathBuf,
     pub embed: DeviceBuffer,
     pub lm_head: Dense,
     pub final_gr: Gr,
@@ -880,6 +881,7 @@ pub fn load(dir: &Path, d: &Dims, mut progress: impl FnMut(&str)) -> Res<Weights
         None
     };
     Ok(Weights {
+        source: dir.to_path_buf(),
         embed,
         lm_head,
         final_gr,

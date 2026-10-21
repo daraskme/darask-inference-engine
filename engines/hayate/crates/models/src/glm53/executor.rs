@@ -165,6 +165,7 @@ pub struct MemoryUsage {
 }
 #[derive(Debug)]
 pub struct Executor<'d> {
+    image_embeddings: BTreeMap<usize, Vec<u8>>,
     device: &'d Device,
     stream: Stream,
     layers: Vec<Layer<'d>>,
@@ -571,6 +572,7 @@ impl<'d> Executor<'d> {
             )?;
         }
         Ok(Self {
+            image_embeddings: BTreeMap::new(),
             device,
             stream,
             layers,
@@ -776,12 +778,43 @@ impl<'d> Executor<'d> {
             None => free,
         }
     }
+    pub fn has_images(&self) -> bool {
+        !self.image_embeddings.is_empty()
+    }
+    /// Projected image rows, before the language model expands its hyper-connection streams.
+    pub fn set_image_embeddings(&mut self, images: Vec<(usize, Vec<f32>)>) -> Result<()> {
+        self.image_embeddings.clear();
+        for (start, values) in images {
+            if values.len() % HIDDEN != 0
+                || start + values.len() / HIDDEN > self.context
+                || values.iter().any(|x| !x.is_finite())
+            {
+                return Err(Error::InvalidShape("GLM visual embeddings/context".into()));
+            }
+            for (i, row) in values.chunks_exact(HIDDEN).enumerate() {
+                let mut bytes = Vec::with_capacity(HIDDEN * HC * 2);
+                for _ in 0..HC {
+                    for &v in row {
+                        let b = v.to_bits();
+                        let bf = ((b + 0x7fff + ((b >> 16) & 1)) >> 16) as u16;
+                        bytes.extend(bf.to_le_bytes());
+                    }
+                }
+                self.image_embeddings.insert(start + i, bytes);
+            }
+        }
+        self.device_ready = false;
+        Ok(())
+    }
     pub fn step(&mut self, token: u32) -> Result<u32> {
         self.experts.check_worker_error()?;
         if token as usize >= self.vocab || self.position >= self.context {
             return Err(Error::InvalidShape("GLM token/context out of range".into()));
         }
-        if self.device_decode.is_some() && !self.reference {
+        if self.device_decode.is_some()
+            && !self.reference
+            && !self.image_embeddings.contains_key(&self.position)
+        {
             let host_syncs = hayate_kernels::runtime::host_sync_count();
             let next = self.step_device(token)?;
             self.host_syncs += hayate_kernels::runtime::host_sync_count() - host_syncs;
@@ -790,6 +823,7 @@ impl<'d> Executor<'d> {
             self.probe_placement()?;
             return Ok(next);
         }
+        self.device_ready = false;
         self.prepare_async()?;
         let host_syncs = hayate_kernels::runtime::host_sync_count();
         let token_start = Instant::now();
@@ -807,6 +841,9 @@ impl<'d> Executor<'d> {
             },
             "glm embedding",
         )?;
+        if let Some(bytes) = self.image_embeddings.get(&self.position) {
+            self.stream.copy_h2d(&mut self.input, bytes)?;
+        }
         if let Some(p) = &self.profile {
             p.reset();
         }
@@ -1335,7 +1372,7 @@ impl<'d> Executor<'d> {
             }
 
             let mut hidden = Vec::with_capacity(chunk.len() * HC * HIDDEN * 2);
-            for &id in chunk {
+            for (row_index, &id) in chunk.iter().enumerate() {
                 check(
                     unsafe {
                         g::hayate_glm_embed(
@@ -1348,6 +1385,9 @@ impl<'d> Executor<'d> {
                     },
                     "glm prefill embed",
                 )?;
+                if let Some(bytes) = self.image_embeddings.get(&(self.position + row_index)) {
+                    self.stream.copy_h2d(&mut self.input, bytes)?;
+                }
                 let mut row = vec![0; HC * HIDDEN * 2];
                 self.stream.copy_d2h(&mut row, &self.input)?;
                 hidden.extend(row);
@@ -1397,6 +1437,16 @@ impl<'d> Executor<'d> {
             },
             "glm batch embed",
         )?;
+        for (&position, bytes) in self
+            .image_embeddings
+            .range(self.position..self.position + ids.len())
+        {
+            self.stream.copy_h2d_at(
+                self.prefill.layer.get_mut("input").unwrap(),
+                (position - self.position) * HC * HIDDEN * 2,
+                bytes,
+            )?;
+        }
         self.ready.record(&self.stream)
     }
     fn prefill_batch(&mut self, ids: &[u32], first_layer_done: bool) -> Result<u32> {

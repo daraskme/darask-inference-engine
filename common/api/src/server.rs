@@ -108,6 +108,7 @@ fn run_job(shared: &Shared, g: &mut dyn Generator, job: Job) {
     let mut out = Output::new(p, job.id_base);
     let req = GenRequest {
         prompt: &p.prompt,
+        images: &p.images,
         params: &p.params,
         max_new: p.max_new,
         marks: &p.marks,
@@ -277,7 +278,7 @@ fn gib(bytes: usize) -> f64 {
 fn auto_ctx(max_ctx: usize) -> Result<usize, String> {
     const REST: usize = 73_612 << 20;
     const PER_TOKEN: usize = 56_832;
-    const SPARE: usize = 2 << 30;
+    const SPARE: usize = 4 << 30; // ViT weights and tiled attention workspace.
     let (free, _) = tsumuji_cuda::Device::open(0)
         .and_then(|d| d.mem_info())
         .map_err(|e| e.to_string())?;

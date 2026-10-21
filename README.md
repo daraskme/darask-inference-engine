@@ -48,6 +48,17 @@ nix develop
 HayateのCUDAビルドには、初回に`engines/hayate/scripts/fetch-third-party.sh`で固定版の依存ソースを取得します。
 TsumujiとKogarashiのネイティブデコーダはllama.cppにリンクしません。
 
+## 画像入力・キャプション
+
+3モデルとも画像からテキストを生成できます。サーバーを起動後、次のコマンドでフォルダ内の画像を2件並列で送信します。
+
+```sh
+./darask batch kogarashi --input /path/to/images --out local/captions.jsonl --jobs 2
+```
+
+`hayate`、`tsumuji`にも対応します。結果は逐次保存され、同じコマンドで未完了分から再開できます。
+GPUは重みを一度ロードして順次推論します。重みの準備・API形式・詳しい使い方は[画像入力](docs/VISION.md)を参照してください。
+
 ## 品質と測定
 
 ```sh

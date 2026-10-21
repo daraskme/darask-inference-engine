@@ -38,6 +38,7 @@ impl From<&str> for ApiError {
 pub struct Prepared {
     pub chat: bool,
     pub prompt: Vec<u32>,
+    pub images: Vec<darask_vision::Span>,
     /// Completions with `echo`: the prompt text to put before the output.
     pub echo: Option<String>,
     pub params: Params,
@@ -223,6 +224,7 @@ fn common(
         None => 16.min(ctx - prompt.len()), // OpenAI's default for completions
     };
     Ok(Prepared {
+        images: Vec::new(),
         chat,
         prompt,
         echo: None,
@@ -424,6 +426,9 @@ pub fn parse_chat(m: &TextModel, body: &Json, seed: u64) -> Result<Prepared, Api
     {
         return Err("response_format other than text is not supported yet".into());
     }
+    let raw = darask_json::parse(&body.to_string()).map_err(|e| e.to_string())?;
+    let (raw, images) = darask_vision::chat(&raw, darask_vision::Kind::Qwen, 1024)?;
+    let body = &Json::parse(&raw.dump())?;
     let tools = parse_tools(body)?;
     let msgs = parse_messages(body.get("messages"))?;
     let mut o = chat_options(body)?;
@@ -434,6 +439,9 @@ pub fn parse_chat(m: &TextModel, body: &Json, seed: u64) -> Result<Prepared, Api
     let text = chat::render(&msgs, &tools, &o)?;
     let prompt = m.tok.encode(&text);
     let mut p = common(m, body, true, prompt, seed)?;
+    if !images.is_empty() {
+        p.images = darask_vision::locate(&p.prompt, images, darask_vision::Kind::Qwen)?;
+    }
     p.reasoning = o.thinking()
         && o.add_generation_prompt
         && boolean(body, "separate_reasoning")?.unwrap_or(true);

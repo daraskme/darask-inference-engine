@@ -78,7 +78,7 @@ pub fn read(reader: impl Read) -> Result<Request> {
         return Err(bad("Host and POST Content-Length required"));
     }
     let length = length.unwrap_or(0);
-    if length > 16 * 1024 * 1024 {
+    if length > 64 * 1024 * 1024 {
         return Err(bad("body exceeds 16 MiB"));
     }
     let mut body = vec![0; length];

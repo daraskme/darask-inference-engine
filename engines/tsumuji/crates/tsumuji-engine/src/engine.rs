@@ -41,6 +41,7 @@ fn nt_index(n: usize) -> usize {
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 struct QsaDims {
+    rotary: u64,
     aq: i32,
     akv: i32,
     ad: i32,
@@ -478,7 +479,7 @@ fn ctx_bytes(d: &Dims, ctx: usize, mtp: bool) -> usize {
 
 /// VRAM left free when the context is sized automatically (ctx = 0): CUDA graphs, snapshots,
 /// other processes' small allocations.
-const CTX_RESERVE: usize = 2 << 30;
+const CTX_RESERVE: usize = 4 << 30; // Native vision weights + tiled attention.
 
 /// The longest context whose state fits in free VRAM after the weights, leaving CTX_RESERVE:
 /// a probe state (1024 tokens) measures the context-independent part.
@@ -510,6 +511,10 @@ fn auto_ctx(dev: &Device, d: &Dims, mtp: bool) -> Res<usize> {
 
 #[derive(Debug)]
 pub struct Engine {
+    vision: Option<darask_vision::encoder::Encoder>,
+    visual: Option<DeviceBuffer>,
+    visual_map: Option<DeviceBuffer>,
+    rotary: Option<DeviceBuffer>,
     pub dims: Dims,
     pub weights: Weights,
     pub stream: Stream,
@@ -626,6 +631,10 @@ impl Engine {
         cu(dev.synchronize())?;
         let env_off = |k: &str| std::env::var(k).is_ok_and(|v| v == "1");
         let mut e = Self {
+            vision: None,
+            visual: None,
+            visual_map: None,
+            rotary: None,
             s,
             stream: cu(Stream::new())?,
             dims,
@@ -839,6 +848,47 @@ impl Engine {
     /// Runs one token through the model; the logits and the greedy next token stay on the
     /// device. `Some(token)` feeds a given token (a prompt); `None` feeds the previous step's
     /// greedy token without a host round trip.
+    pub fn set_images(&mut self, spans: &[darask_vision::Span]) -> Res<()> {
+        if spans.is_empty() && self.visual.is_none() {
+            return Ok(());
+        }
+        cu(self.stream.synchronize())?;
+        self.graphs.clear();
+        self.visual = None;
+        self.visual_map = None;
+        self.rotary = None;
+        if !spans.is_empty() {
+            if self.vision.is_none() {
+                self.vision = Some(darask_vision::encoder::Encoder::load(
+                    &self.weights.source,
+                    darask_vision::Kind::Qwen,
+                )?);
+            }
+            let encoder = self.vision.as_mut().unwrap();
+            if encoder.hidden() != self.dims.h {
+                return Err("vision/text hidden size mismatch".into());
+            }
+            let mut values = Vec::new();
+            let mut map = vec![-1i32; self.ctx];
+            for s in spans {
+                if s.start + s.image.tokens() > self.ctx {
+                    return Err("image exceeds context".into());
+                }
+                let row = values.len() / self.dims.h;
+                values.extend(encoder.encode(&s.image)?);
+                for i in 0..s.image.tokens() {
+                    map[s.start + i] = (row + i) as i32;
+                }
+            }
+            self.visual = Some(cu(DeviceBuffer::from_slice(&values))?);
+            self.visual_map = Some(cu(DeviceBuffer::from_slice(&map))?);
+            self.rotary = Some(cu(DeviceBuffer::from_slice(&darask_vision::positions(
+                spans, self.ctx,
+            )))?);
+        }
+        cu(tsumuji_cuda::synchronize_context())?;
+        Ok(())
+    }
     pub fn step(&mut self, token: Option<u32>) -> Res<()> {
         match token {
             Some(t) => self.step_tokens(&[t]),
@@ -1036,7 +1086,17 @@ impl Engine {
             s.next.ptr, s.ctx4.ptr, s.tok3.ptr, s.pos.ptr, s.par.ptr, eos, ni
         );
         self.go(self.k.begin_step, LaunchDims::linear(1, 32), &mut a)?;
-        let mut a = args!(w.embed.ptr, s.tok3.ptr, s.r.ptr, s.ss.ptr, h, hc);
+        let mut a = args!(
+            w.embed.ptr,
+            s.tok3.ptr,
+            s.r.ptr,
+            s.ss.ptr,
+            h,
+            hc,
+            s.pos.ptr,
+            self.visual.as_ref().map_or(0, |b| b.ptr),
+            self.visual_map.as_ref().map_or(0, |b| b.ptr)
+        );
         self.go(self.k.embed_streams, elementwise, &mut a)?;
         let mut stats = elem_rows;
         mark!("embed");
@@ -1351,6 +1411,7 @@ impl Engine {
         )? as i32;
         let ld = rows as i32;
         let qd = QsaDims {
+            rotary: self.rotary.as_ref().map_or(0, |b| b.ptr),
             aq: d.att_q as i32,
             akv: d.att_kv as i32,
             ad: d.att_d as i32,
